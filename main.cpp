@@ -7,6 +7,45 @@ using namespace std;
 
 vector<char> breakChar = {'.', ' ', ';', ','};
 
+string component(ifstream &inFile, map<string, string> &prefixes) {
+    bool isURI = true;
+    bool hasPrefix = false;
+    char breakAt = '>';
+    char c;
+    string val;
+    inFile >> c;
+
+    if (c == '<') {
+        inFile >> c;
+    } else if (c == '"') {
+        inFile >> c;
+        bool isURI = false;
+        breakAt = '"';
+    } else {
+        hasPrefix = true;
+        breakAt = ' ';
+    }
+
+    // Assume URI in this loop
+    while (c != breakAt) {
+        if (c == ':' && hasPrefix) {
+            // This is when the triple has a prefix rather than a full uri
+            val = prefixes[val];
+        } else {
+            val = val + c;
+        }
+        c = inFile.get(); // We care about whitespace here
+    }
+
+    // cout << 5 << c << '\n';
+
+    if (val.length() == 1 && val[0] == 'a') {
+        return "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
+    }
+
+    return val;
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         cout << "Please supply name of .ttl document";
@@ -15,12 +54,12 @@ int main(int argc, char *argv[]) {
         vector<vector<string>> triples = {};
         map<string, string> prefixes = {};
         char c;
-        inFile >> c;
-        
+               
         // Extract prefixes from file
         while (true) {
-
+            inFile >> c;
             if (c != '@' ) {
+                inFile.putback(c);
                 break;
             } else {
                 // Move over word 'prefix'
@@ -50,87 +89,143 @@ int main(int argc, char *argv[]) {
             }
 
             inFile >> c;
-            inFile >> c;
-            cout << key << ' ' << val << '\n';
             prefixes[key] = val;
         }
         
         // Assume that the ttl file does not cotain any syntax errors
         while (true) {
-            string s;
-            string p;
-            string o;
-            bool isURI = false;
-            bool hasPrefix = false;
-
-            // Skip whitespace
-            if (c != '"') {
-                    isURI = true;
-                    if (c == '<') {
-                        inFile >> c;
-                        hasPrefix = false;
-                    } else {
-                        hasPrefix = true;
-                    }
-            }
-
-
-            // Assume URI in this loop
-            while ( 
-                hasPrefix ? (c != ' ') : (c != '>')
-                ) {
-                if (c == ':' && hasPrefix) {
-                    // This is when the triple has a prefix rather than a full uri
-                    s = prefixes[s];
-                } else {
-                    s = s + c;
-                }
-                c = inFile.get(); // We care about whitespace here
-            }
-
-            inFile >> c;
-
-            // Assume URI in this loop
-            while ( 
-                hasPrefix ? (c != ' ') : (c != '>')
-                ) {
-                if (c == ':' && hasPrefix) {
-                    // This is when the triple has a prefix rather than a full uri
-                    p = prefixes[p];
-                } else {
-                    p = p + c;
-                }
-                c = inFile.get(); // We care about whitespace here
-            }
-
-            if (s.length() == 1 && s[0] == 'a') {
-                //s = 
-            }
-
-            if (p.length() == 1 && s[0] == 'a') {
-
-            }
-
-            if (o.length() == 1 && s[0] == 'a') {
-
-            }
-
-
-
+            cout << 'a';
+            string s = component(inFile, prefixes);
+            cout << 'b';
+            string p = component(inFile, prefixes);
+            cout << 'c';
+            string o = component(inFile, prefixes);
             triples.push_back({s, p, o});
+            cout << 1;
+            c = inFile.get();
+            while (c == ' ') {
+                c = inFile.get();
+            }
+            cout << 2;
+            
+            while (c == ';' || c == ',') {
 
+                if (c == ';') {
+                    string p = component(inFile, prefixes);
+                }
+                string o = component(inFile, prefixes);
+                triples.push_back({s, p, o});
 
-            break;
-        }
+                // cout << 1 << c << '\n';
+                c = inFile.get();
+                // cout << 2 << c << '\n';
+                while (c == ' ') {
+                    c = inFile.get();
+                }
+                // cout << 3 << c << '\n';
+                
 
-        
-        // int i = 0;
-        char delimiter = '.';
-        // while (true) {
-        inFile >> delimiter;
+                if (c != '.' && c != ';' && c != ',') {
+                    // cout << c << '\n';
+                }
+                cout << 3;
+
+            }
+
+            cout << 4;
+
+            cout << c << '\n';
+            if (c != '.') {
+                break;
+            }
             // break;
-        // };
-        //cout << triples[i][0];
+        }
+        cout << triples[0][0] << ' ' << triples[0][1] << ' ' << triples[0][2] << '\n';
+        cout << triples[1][0] << ' ' << triples[1][1] << ' ' << triples[1][2] << '\n';
+        cout << triples[2][0] << ' ' << triples[2][1] << ' ' << triples[2][2] << '\n';
     }
     return 0;
 }
+
+
+
+
+            
+            
+            // string s;
+            // string p;
+            // string o;
+            // char delimeter;
+            // bool isURI = true;
+            // bool hasPrefix = false;
+            // char breakAt = '>';
+
+            // if (c == '<') {
+            //     inFile >> c;
+            // } else if (c == '"') {
+            //     inFile >> c;
+            //     bool isURI = false;
+            //     breakAt = '"';
+            // } else {
+            //     hasPrefix = true;
+            //     breakAt = ' ';
+            // }
+
+            // // Assume URI in this loop
+            // while (c != breakAt) {
+            //     if (c == ':' && hasPrefix) {
+            //         // This is when the triple has a prefix rather than a full uri
+            //         s = prefixes[s];
+            //     } else {
+            //         s = s + c;
+            //     }
+            //     c = inFile.get(); // We care about whitespace here
+            // }
+
+            // inFile >> c;
+
+            // // Assume URI in this loop
+            // while ( 
+            //     hasPrefix ? (c != ' ') : (c != '>')
+            //     ) {
+            //     if (c == ':' && hasPrefix) {
+            //         // This is when the triple has a prefix rather than a full uri
+            //         p = prefixes[p];
+            //     } else {
+            //         p = p + c;
+            //     }
+            //     c = inFile.get(); // We care about whitespace here
+            // }
+
+            // inFile >> c;
+
+            // if (c == '"') {
+            //     while ( 
+            //     hasPrefix ? (c != ' ') : (c != '>')
+            //     ) {
+            //     if (c == ':' && hasPrefix) {
+            //         // This is when the triple has a prefix rather than a full uri
+            //         o = prefixes[o];
+            //     } else {
+            //         o = o + c;
+            //     }
+            //     c = inFile.get(); // We care about whitespace here
+            // }
+            // } else {
+            //     while ( 
+            //         c != '"'
+            //     ) {
+            //     o = o + c;
+            //     c = inFile.get(); // We care about whitespace here
+            //     }
+            // }
+          
+            // if (p.length() == 1 && s[0] == 'a') {
+            //     //p = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
+            // }
+
+            // triples.push_back({s, p, o});
+
+            // // inFile >> delimeter;
+
+            // break;
