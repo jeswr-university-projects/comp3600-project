@@ -14,130 +14,123 @@ int main(int argc, char *argv[]) {
         ifstream inFile(argv[1]);
         vector<vector<string>> triples = {};
         map<string, string> prefixes = {};
-        string s;
-        s = inFile.get();
-        cout << s << '\n';
+        char c;
+        inFile >> c;
         
+        // Extract prefixes from file
+        while (true) {
+
+            if (c != '@' ) {
+                break;
+            } else {
+                // Move over word 'prefix'
+                inFile >> c;
+                inFile >> c;
+                inFile >> c;
+                inFile >> c;
+                inFile >> c;
+                inFile >> c;
+                inFile >> c;
+            }
+
+            string key;
+            string val;
+
+            while (c != ':') {
+                key += c;
+                inFile >> c;
+            }
+
+            inFile >> c;
+            inFile >> c;
+
+            while ( c != '>' ) {
+                val += c;
+                inFile >> c;
+            }
+
+            inFile >> c;
+            inFile >> c;
+            cout << key << ' ' << val << '\n';
+            prefixes[key] = val;
+        }
         
-        return 0;
-        
-    //     cout << '.';
-    //     char c;
-    //     inFile >> c;
-    //     cout << 'h';
-        
+        // Assume that the ttl file does not cotain any syntax errors
+        while (true) {
+            string s;
+            string p;
+            string o;
+            bool isURI = false;
+            bool hasPrefix = false;
+
+            // Skip whitespace
+            if (c != '"') {
+                    isURI = true;
+                    if (c == '<') {
+                        inFile >> c;
+                        hasPrefix = false;
+                    } else {
+                        hasPrefix = true;
+                    }
+            }
+
+
+            // Assume URI in this loop
+            while ( 
+                hasPrefix ? (c != ' ') : (c != '>')
+                ) {
+                if (c == ':' && hasPrefix) {
+                    // This is when the triple has a prefix rather than a full uri
+                    s = prefixes[s];
+                } else {
+                    s = s + c;
+                }
+                c = inFile.get(); // We care about whitespace here
+            }
+
+            inFile >> c;
+
+            // Assume URI in this loop
+            while ( 
+                hasPrefix ? (c != ' ') : (c != '>')
+                ) {
+                if (c == ':' && hasPrefix) {
+                    // This is when the triple has a prefix rather than a full uri
+                    p = prefixes[p];
+                } else {
+                    p = p + c;
+                }
+                c = inFile.get(); // We care about whitespace here
+            }
+
+            if (s.length() == 1 && s[0] == 'a') {
+                //s = 
+            }
+
+            if (p.length() == 1 && s[0] == 'a') {
+
+            }
+
+            if (o.length() == 1 && s[0] == 'a') {
+
+            }
 
 
 
-    //     // Extract prefixes from file
-    //     while (true) {
-    //         cout << 'p';
+            triples.push_back({s, p, o});
 
-    //         // Ignore whitespace
-    //         // while (c == ' ' || c == '\n') {
-    //         //     cout << c << '\n';
-    //         //     inFile >> c;
-                
-    //         // }
 
-    //         if (c != '@' ) {
-    //             break;
-    //         } else {
-    //             // Move over word 'prefix'
-    //             inFile >> c;
-    //             inFile >> c;
-    //             inFile >> c;
-    //             inFile >> c;
-    //             inFile >> c;
-    //         }
-
-    //         // Ignore whitespace
-    //         while (c == ' ' || c == '\n') {
-    //             cout << c << '\n';
-    //             inFile >> c;
-    //         }
-
-    //         string key;
-    //         string val;
-
-    //         while (c != ':') {
-    //             key += c;
-    //             inFile >> c;
-    //         }
-    //         inFile >> c;
-
-    //         while (c == ' ' || c == '<') {
-    //             inFile >> c;
-    //         }
-
-    //         while ( c != '>' ) {
-    //             val += c;
-    //             inFile >> c;
-    //         }
-
-    //         while ( c != '.' ) {
-    //             inFile >> c;
-    //         }
-
-    //         prefixes[key] = val;
-
-    //         inFile >> c;
-    //     }
-
-    //     // Assume that the ttl file does not cotain any syntax errors
-    //     while (true) {
-    //         string temp;
-    //         bool isURI;
-    //         bool hasPrefix;
-
-    //         // Skip whitespace
-    //         // while (c == ' ') {
-    //         //     inFile >> c;
-    //         // }
-
-    //         if (c != '"') {
-    //                 isURI = true;
-    //                 if (c == '<') {
-    //                     inFile >> c;
-    //                     hasPrefix = false;
-    //                 } else {
-    //                     hasPrefix = true;
-    //                 }
-    //         }
-    //         int ct = 0;
-    //         cout << '\n';
-    //         // Assume URI in this loop
-    //         while (
-    //             //c != ' ' && c!= '.' && c != ';' && c != ',' && c != '<' && 
-    //             hasPrefix ? (c != ' ' && ct < 10) : (c != '>')
-    //             //c != '>' || (!hasPrefix )
-    //             ) {
-    //                 inFile.
-    //                 ct++;
-    //             //cn++;
-    //             if (c == ':' && hasPrefix) {
-    //                 // This is when the triple has a prefix rather than a full uri
-    //                 temp = prefixes[temp];
-    //             } else {
-    //                 temp = temp + c;
-    //             }
-    //             inFile >> c;
-    //             cout << c << '\n';
-    //         }
-    //         // return 0;
-    //         cout << temp;
-    //         break;
-    //     }
+            break;
+        }
 
         
-    //     // int i = 0;
-    //     char delimiter = '.';
-    //     // while (true) {
-    //     inFile >> delimiter;
-    //         // break;
-    //     // };
-    //     //cout << triples[i][0];
-    // }
-    // return 0;
+        // int i = 0;
+        char delimiter = '.';
+        // while (true) {
+        inFile >> delimiter;
+            // break;
+        // };
+        //cout << triples[i][0];
     }
+    return 0;
 }
