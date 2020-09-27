@@ -1,0 +1,37 @@
+@prefix ach: <http://architecture#> .
+@prefix room: <http://architecture#room_> .
+
+room:Library a ach:Room ;
+    ach:width 15 ;
+    ach:length 20 ;
+    ach:hasBuildingExit true .
+
+room:ConferenceRoom1 a ach:Room ;
+    ach:width 5 ;
+    ach:length 7 ;
+    ach:hasBuildingExit false ;
+    ach:hasPathTo room:Library ;
+    ach:hasPathTo room:ConferenceRoom2 .
+
+room:ConferenceRoom2 a ach:Room ;
+    ach:width 6 ;
+    ach:length 8 ;
+    ach:hasBuildingExit true .
+
+room:AliceOffice a ach:Room ;
+    ach:width 2 ;
+    ach:length 4 ;
+    ach:hasBuildingExit false .
+
+room:BobOffice a ach:Room ;
+    ach:width 2 ;
+    ach:length 4 ;
+    ach:hasPathTo room:CharlieOffice ;
+    ach:hasBuildingExit false .
+
+room:CharlieOffice a ach:Room ;
+    ach:width 2 ;
+    ach:length 4 ;
+    ach:hasPathTo room:BobOffice ;
+    ach:hasPathTo room:ConferenceRoom1 ;
+    ach:hasBuildingExit false .

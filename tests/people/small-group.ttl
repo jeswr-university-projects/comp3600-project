@@ -1,0 +1,13 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix ex: <http://example.org/> .
+@prefix ach: <http://architecture#> .
+@prefix room: <http://architecture#room> .
+
+ex:Alice a foaf:Person ;
+    ach:located room:Library .
+
+ex:Bob a foaf:Person ;
+    ach:located room:BobOffice .
+
+ex:Charles a foaf:Person ;
+    ach:located room:CharlesOffice .
