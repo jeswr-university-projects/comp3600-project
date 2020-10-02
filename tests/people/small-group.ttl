@@ -4,10 +4,13 @@
 @prefix room: <http://architecture#room> .
 
 ex:Alice a foaf:Person ;
-    ach:located room:Library .
+    ach:located room:Library, room:Lib2 .
 
 ex:Bob a foaf:Person ;
     ach:located room:BobOffice .
 
 ex:Charles a foaf:Person ;
     ach:located room:CharlesOffice .
+
+ex:Charles a foaf:Person ;
+    ach:located room:CharlesOffice2 .

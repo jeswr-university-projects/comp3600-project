@@ -5,6 +5,9 @@
         "fstream": "cpp",
         "ostream": "cpp",
         "sstream": "cpp",
-        "streambuf": "cpp"
+        "streambuf": "cpp",
+        "iosfwd": "cpp",
+        "random": "cpp",
+        "iostream": "cpp"
     }
 }
