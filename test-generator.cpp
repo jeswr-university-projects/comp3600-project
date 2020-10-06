@@ -13,8 +13,6 @@ map<string, string> prefixes = {
     {"person", "http://example.org/person#"},
     {"ach", "http://architecture#"}};
 
-
-
 /**
  * This file is used to generate test files for the software -
  * command line options include those to 
@@ -36,6 +34,13 @@ int genPositive(int mean, double var)
 
     return out;
 }
+
+struct PositionRoom
+{
+    int room;
+    int x;
+    int y;
+};
 
 /**
  * 
@@ -81,6 +86,34 @@ Triples generateBuildingTriples(
                            "\"true\""});
         roomsList.erase(roomsList.begin() + index);
     };
+
+    vector<PositionRoom> positionedRooms;
+    int bound = int(sqrt(rooms));
+
+    for (int i = 0; i < rooms; i++)
+    {
+        positionedRooms.push_back({
+            room : i,
+            x : rand() % bound,
+            y : rand() % bound
+        });
+    };
+
+    void createPath(int l, int r)
+    {
+
+        int distance = int(
+            sqrt(
+                pow(positionedRooms[l].x - positionedRooms[r].x, 2) +
+                pow(positionedRooms[l].y - positionedRooms[r].y, 2)));
+
+        triples.push_back({"http://example.org/room#" + l,
+                           "http://architecture#hasPathTo",
+                           "http://example.org/room#" + r});
+    };
+
+    // For now we just place the paths randomly?
+    // Use taken type code from above?
 
     // TODO: MAKE SURE THAT THEIR IS ALWAYS A PATHWAY TO AN EXIT!!
 };
