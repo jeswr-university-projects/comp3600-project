@@ -8,6 +8,7 @@
         "streambuf": "cpp",
         "iosfwd": "cpp",
         "random": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "array": "cpp"
     }
 }
