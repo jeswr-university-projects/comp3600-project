@@ -142,9 +142,3 @@ void generateBuildingFile(int rooms, int avgNeighbours, int clustering, string f
 
     writeTriples(generateBuildingTriples(rooms, avgNeighbours, clustering), prefixes, file);
 };
-
-// typedef vector<array<string, 3>>  Triples;
-
-void triplesToFile(vector<array<string, 3>> triples, map<string, string> prefixes){
-
-};
