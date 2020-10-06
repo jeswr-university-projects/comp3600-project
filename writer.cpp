@@ -33,7 +33,8 @@ SubjectsData triplesToSubjectData(Triples &triples)
 {
     vector<SubjectData> data;
     int l = triples.size();
-    int a, b = -1;
+    int a = -1;
+    int b = -1;
 
     for (int i = 0; i < l; i++)
     {
@@ -89,7 +90,10 @@ SubjectsData triplesToSubjectData(Triples &triples)
                 data[a].predicates[b].objects.push_back(o);
             }
         }
+        a = -1;
+        b = -1;
     };
+
     return data;
 };
 
@@ -101,11 +105,16 @@ string valueToString(string value, map<string, string> &prefixes)
         return value;
     };
 
+    if (value == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
+    {
+        return "a";
+    };
+
     // Next we see if we can apply a prefix
     for (map<string, string>::iterator i = prefixes.begin(); i != prefixes.end(); ++i)
     {
         // This is when the namespace matches
-        if (value.compare(i->second) >= 0)
+        if ((value.size() >= (i->second).size()) && (value.substr(0, (i->second).length()) == (i->second)))
         {
             return (i->first) + ":" + value.substr((i->second).length());
         };
@@ -115,14 +124,20 @@ string valueToString(string value, map<string, string> &prefixes)
     return "<" + value + ">";
 };
 
-void outputSubjectData(SubjectsData &data, map<string, string> prefixes, string file)
+void outputSubjectData(SubjectsData data, map<string, string> prefixes, string file)
 {
     ofstream outFile(file);
-    
-    
+
     // First the prefixes
-    
-    
+    for (map<string, string>::iterator i = prefixes.begin(); i != prefixes.end(); ++i)
+    {
+        outFile << "@prefix " << i->first << ": <" << i->second << "> ." << endl;
+    };
+
+    if (prefixes.size() > 0)
+    {
+        outFile << endl;
+    }
 
     // Now we output the actual data
     for (int i = 0; i < data.size(); i++)
@@ -133,6 +148,10 @@ void outputSubjectData(SubjectsData &data, map<string, string> prefixes, string 
         for (int j = 0; j < subj.predicates.size(); j++)
         {
             PredicateData pred = subj.predicates[j];
+            if (j > 0)
+            {
+                outFile << "\t";
+            }
             outFile << valueToString(pred.predicate, prefixes) << ' ';
 
             for (int k = 0; k < pred.objects.size(); k++)
@@ -142,23 +161,50 @@ void outputSubjectData(SubjectsData &data, map<string, string> prefixes, string 
 
                 if (k + 1 < pred.objects.size())
                 {
-                    outFile << ', ';
+                    outFile << ", ";
                 };
             };
 
             if (j + 1 < pred.objects.size())
             {
-                outFile << '; ';
+                outFile << "; " << endl;
             };
         };
 
         outFile << " ." << endl;
+
+        // Can be improved by putting endl at start of loop as this
+        // also handles the spacing from prefixes
+        if (subj.predicates.size() > 1 && i + 1 < data.size())
+        {
+            outFile << endl;
+        };
     };
 
     outFile.close();
 };
 
-int main()
+void writeTriples(Triples triples, map<string, string> prefixes, string file)
 {
-    return 0;
+    outputSubjectData(triplesToSubjectData(triples), prefixes, file);
 };
+
+// int main(int argc, char *argv[])
+// {
+//     Triples triples = {
+//         {"http://example.org/Alice", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.org/human"},
+//         {"http://example.org/Alice", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.org/agent"},
+//         {"http://example.org/Alice", "http://example.org/alive", "\"true\""},
+//         {"http://example.org/Bob", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.org/human"},
+//         {"http://example.org/Bob", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.org/agent"},
+//         {"http://example.org/Bob", "http://example.org/alive", "\"true\""},
+//         {"http://test.org/Bob", "http://example.org/alive", "\"true\""},
+//     };
+
+//     map<string, string> prefixes = {
+//         {"ex", "http://example.org/"}};
+
+//     writeTriples(triples, prefixes, "test-write.ttl");
+
+//     return 0;
+// };

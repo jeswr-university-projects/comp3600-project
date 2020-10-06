@@ -1,0 +1,9 @@
+@prefix ex: <http://example.org/> .
+
+ex:Alice a ex:human, ex:agent; 
+	ex:alive "true" .
+
+ex:Bob a ex:human, ex:agent; 
+	ex:alive "true" .
+
+<http://test.org/Bob> ex:alive "true" .

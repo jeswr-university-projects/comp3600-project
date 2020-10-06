@@ -29,7 +29,7 @@ If none are specified, `-pr` is run
 ## Note on testing files
 TODO: Provide some alternatives for IRI's from testing files that can be used to run
 TODO: Add information about the size of various testing files - person files etc
-
+TODO: Create a "generate diagonstics function"
 
 ## Description
 In the event of a fire in a large populated office space during the year 2020, two primary risk factors are present; the risk of burns from the fire, and the risk of COVID-19 transmission as large crowds exit the building en-masse. The company that owns the building has commissioned an app that is to be installed on each employees phone. In the event of a fire within the building, it will tell employees exactly when and where to move so as to exit the office safely whilst minimizing the likelihood of COVID-19 transmission.
