@@ -1,5 +1,35 @@
 # COMP 3600 Project
 
+## Usage
+The following instructions have been tested on a Debain distribution of Linux.
+
+To compile the project
+```
+g++ -std=c++11 main.cpp escape_planner
+```
+
+To calculate the escape paths for *all* entities in a building
+```
+escape_planner building_x_architectrue.ttl people_y_building_x.ttl
+```
+
+To calculate the escape paths for *specified* entities in a building
+```
+escape_planner building_x_architectrue.ttl persons_x_building_x.ttl ex:Alice http://example.org/Bob
+```
+
+| arg         | Description                                                                                      |
+| ----------- | -------------------------------------------------------------------------------------------------|
+| p           | Calculate and write paths                                                                        |
+| r           | Calculate and write risk of catching COVID - This can only be called *after* -p has been called  |
+
+If neither is specified, `-pr` is run
+
+## Note on testing files
+TODO: Provide some alternatives for IRI's from testing files that can be used to run
+TODO: Add information about the size of various testing files - person files etc
+
+
 ## Description
 In the event of a fire in a large populated office space during the year 2020, two primary risk factors are present; the risk of burns from the fire, and the risk of COVID-19 transmission as large crowds exit the building en-masse. The company that owns the building has commissioned an app that is to be installed on each employees phone. In the event of a fire within the building, it will tell employees exactly when and where to move so as to exit the office safely whilst minimizing the likelihood of COVID-19 transmission.
 
