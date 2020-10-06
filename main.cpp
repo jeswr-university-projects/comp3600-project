@@ -2,10 +2,10 @@
 #include <fstream>
 #include <vector>
 #include <map>
-
+#include "rdf-types.h"
 using namespace std;
 
-string component(ifstream &inFile, map<string, string> &prefixes) {
+string component(ifstream &inFile, Prefixes &prefixes) {
     bool isURI = true;
     bool hasPrefix = false;
     char breakAt = '>';
@@ -47,10 +47,10 @@ string component(ifstream &inFile, map<string, string> &prefixes) {
     return val;
 }
 
-vector<array<string, 3>> getTriples(string file) {
+Triples getTriples(string file) {
     ifstream inFile(file);
-    vector<array<string, 3>> triples = {};
-    map<string, string> prefixes = {};
+    Triples triples = {};
+    Prefixes prefixes = {};
     char c;
     inFile >> c;
 
@@ -106,7 +106,7 @@ int main(int argc, char *argv[]) {
     if (argc < 2) {
         cout << "Please supply name of .ttl document";
     } else {
-        vector<array<string, 3>> triples = getTriples(argv[1]);
+        Triples triples = getTriples(argv[1]);
         for (int i = 0; i < triples.size(); i++) {
             cout << triples[i][0] << ' ' << triples [i][1] << ' ' << triples[i][2] << '\n';
         }

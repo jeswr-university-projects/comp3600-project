@@ -1,28 +1,6 @@
-#include <vector>
 #include <iostream>
-#include <fstream>
-#include <vector>
-#include <map>
+#include "rdf-types.h"
 using namespace std;
-#include <cstdlib>
-
-typedef array<string, 3> Triple;
-
-typedef vector<Triple> Triples;
-
-struct PredicateData
-{
-    string predicate;
-    vector<string> objects;
-};
-
-struct SubjectData
-{
-    string subject;
-    vector<PredicateData> predicates;
-};
-
-typedef vector<SubjectData> SubjectsData;
 
 /**
  * Takes a set of triples and converts it into
@@ -31,7 +9,7 @@ typedef vector<SubjectData> SubjectsData;
  */
 SubjectsData triplesToSubjectData(Triples &triples)
 {
-    vector<SubjectData> data;
+    SubjectsData data;
     int l = triples.size();
     int a = -1;
     int b = -1;
@@ -42,7 +20,7 @@ SubjectsData triplesToSubjectData(Triples &triples)
         string s = triple[0];
         string p = triple[1];
         string o = triple[2];
-        vector<PredicateData> predData;
+        PredicatesData predData;
 
         for (int j = 0; j < data.size(); j++)
         {
@@ -97,7 +75,13 @@ SubjectsData triplesToSubjectData(Triples &triples)
     return data;
 };
 
-string valueToString(string value, map<string, string> &prefixes)
+/**
+ * Converts a value in an RDF triple to string of the
+ * correct format to write to .ttl file.
+ * @param value string to be prepared for file
+ * @param prefixes prefixes used in the file
+ */
+string valueToString(string value, Prefixes &prefixes)
 {
     // Object literal
     if (value[0] == '"')
@@ -111,7 +95,7 @@ string valueToString(string value, map<string, string> &prefixes)
     };
 
     // Next we see if we can apply a prefix
-    for (map<string, string>::iterator i = prefixes.begin(); i != prefixes.end(); ++i)
+    for (Prefixes::iterator i = prefixes.begin(); i != prefixes.end(); ++i)
     {
         // This is when the namespace matches
         if ((value.size() >= (i->second).size()) && (value.substr(0, (i->second).length()) == (i->second)))
@@ -124,12 +108,18 @@ string valueToString(string value, map<string, string> &prefixes)
     return "<" + value + ">";
 };
 
-void outputSubjectData(SubjectsData data, map<string, string> prefixes, string file)
+/**
+ * Takes data in the format of SubjectsData and writes it to a file
+ * @param data takes a set of triples in SubjectsData format
+ * @param prefies used in the file
+ * @param file name of file to be generated
+ */
+void outputSubjectData(SubjectsData data, Prefixes prefixes, string file)
 {
     ofstream outFile(file);
 
     // First the prefixes
-    for (map<string, string>::iterator i = prefixes.begin(); i != prefixes.end(); ++i)
+    for (Prefixes::iterator i = prefixes.begin(); i != prefixes.end(); ++i)
     {
         outFile << "@prefix " << i->first << ": <" << i->second << "> ." << endl;
     };
@@ -184,27 +174,13 @@ void outputSubjectData(SubjectsData data, map<string, string> prefixes, string f
     outFile.close();
 };
 
-void writeTriples(Triples triples, map<string, string> prefixes, string file)
+/**
+ * Writes triples to a file
+ * @param triples triples to write to file
+ * @param prefixes prefixes to use in the file
+ * @param file name of the file
+ */
+void writeTriples(Triples triples, Prefixes prefixes, string file)
 {
     outputSubjectData(triplesToSubjectData(triples), prefixes, file);
 };
-
-// int main(int argc, char *argv[])
-// {
-//     Triples triples = {
-//         {"http://example.org/Alice", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.org/human"},
-//         {"http://example.org/Alice", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.org/agent"},
-//         {"http://example.org/Alice", "http://example.org/alive", "\"true\""},
-//         {"http://example.org/Bob", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.org/human"},
-//         {"http://example.org/Bob", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "http://example.org/agent"},
-//         {"http://example.org/Bob", "http://example.org/alive", "\"true\""},
-//         {"http://test.org/Bob", "http://example.org/alive", "\"true\""},
-//     };
-
-//     map<string, string> prefixes = {
-//         {"ex", "http://example.org/"}};
-
-//     writeTriples(triples, prefixes, "test-write.ttl");
-
-//     return 0;
-// };

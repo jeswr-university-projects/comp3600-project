@@ -8,11 +8,6 @@
 
 using namespace std;
 
-map<string, string> prefixes = {
-    {"room", "http://example.org/room#"},
-    {"person", "http://example.org/person#"},
-    {"ach", "http://architecture#"}};
-
 /**
  * This file is used to generate test files for the software -
  * command line options include those to 
@@ -22,31 +17,50 @@ int main(int argc, char *argv[]){
 
 };
 
-int genPositive(int mean, double var)
+/**
+ * Randomly generate a number over a given
+ * mean and variance but re-sample if the
+ * numner is less than or equal to zero
+ * @param mean mean of the distribution to sample over
+ * @param variance to sample over
+ */
+int genPositive(int mean, double variance)
 {
     std::default_random_engine generator;
-    std::normal_distribution<int> distribution(mean, var);
+    std::normal_distribution<int> distribution(mean, variance);
 
     int out;
     // Generate a number of neighbours that is strictly positive
     while ((out = distribution(generator)) <= 0)
-        ;
+    {
+    };
 
     return out;
-}
+};
 
+/**
+ * Room with x-y coordinate location
+ * @param room room ID
+ * @param x x-coordinate of room
+ * @param y y-coordinate of room
+ */
 struct PositionRoom
 {
+    // Room Id
     int room;
+    // Room x-coord
     int x;
+    // Room y-coord
     int y;
 };
 
 /**
- * 
- * @param rooms - number of rooms to generate
- * @param avgNeighbours - the average number of rooms that are neighbours
- * @params clustering [0 - 1] - 0 no clustering, connections are more or less random; 1 - high clustering will connect to immediate neighbours
+ * Generates the triples for a sample building dataset
+ * @param rooms number of rooms to generate
+ * @param avgNeighbours the average number of rooms that are neighbours
+ * @param variance variance in the number of neighbours
+ * @param clustering [0 - 1]; 0 no clustering, connections are more or less random; 1 - high clustering will connect to immediate neighbours
+ * @param exits the number of exits for the building
  */
 Triples generateBuildingTriples(
     int rooms = 15,
@@ -88,7 +102,7 @@ Triples generateBuildingTriples(
     };
 
     vector<PositionRoom> positionedRooms;
-    int bound = int(sqrt(rooms));
+    int bound = int(sqrt(rooms)); // Bound on room coords
 
     for (int i = 0; i < rooms; i++)
     {
@@ -110,6 +124,11 @@ Triples generateBuildingTriples(
         triples.push_back({"http://example.org/room#" + l,
                            "http://architecture#hasPathTo",
                            "http://example.org/room#" + r});
+
+        // TODO: CHECK IF WE WANT TRANSITIVITY - if so uncomment code below
+        // triples.push_back({"http://example.org/room#" + r,
+        //                    "http://architecture#hasPathTo",
+        //                    "http://example.org/room#" + l});
     };
 
     // For now we just place the paths randomly?
@@ -118,7 +137,15 @@ Triples generateBuildingTriples(
     // TODO: MAKE SURE THAT THEIR IS ALWAYS A PATHWAY TO AN EXIT!!
 };
 
-void generatePeopleFile(int noPeople, int noRooms, string file)
+/**
+ * Generates the file for a sample dataset of people
+ * @param noPeople to be generated
+ * @param noRooms to that people are put into
+ * @param file name of file to write to
+ */
+
+// TODO: WORK WITH UNEVEN DISTRIBUTIONS OF PEOPLE
+void generatePeopleFile(int noPeople, int noRooms, Prefixes prefixes, string file)
 {
     Triples triples;
 
@@ -140,5 +167,5 @@ void generatePeopleFile(int noPeople, int noRooms, string file)
 void generateBuildingFile(int rooms, int avgNeighbours, int clustering, string file)
 {
 
-    writeTriples(generateBuildingTriples(rooms, avgNeighbours, clustering), prefixes, file);
+    writeTriples(generateBuildingTriples(rooms, avgNeighbours, clustering), defaultPrefixes, file);
 };
