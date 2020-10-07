@@ -54,6 +54,74 @@ struct PositionRoom
     int y;
 };
 
+struct WeightedValue {
+    int value;
+    double weight;
+};
+
+typedef vector<WeightedValue> WeightedValues;
+
+/**
+ * Generates random double in a given range
+ */
+double randDouble(double min, double max) {
+    return min + ((double)rand() / RAND_MAX) * (max - min);
+};
+
+/**
+ * Generates a set of random numbers in a given range 
+ * TODO make more efficient using variant of the Fisher-Yates shuffle
+ * https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#Fisher_and_Yates.27_original_method
+ * Also has the side-effecting behavior of removing the selected value from the values array so that
+ * we can do multiple-non repeated selections
+ */
+int weightedPick(WeightedValues &values) {
+    double totalWeight = 0;
+
+    for (int i = 0; i < values.size(); i++) {
+        totalWeight += values[i].weight;
+    };
+
+    // Radomly generated point at which to produce a
+    // cumulative sum to
+    double randCum = randDouble(0, totalWeight);
+    int index = -1;
+
+    while (randCum >= 0) {
+        index++;
+        randCum -= values[index].weight;
+    };
+    
+    int value = values[index].value;
+
+    return value;
+};
+
+/**
+ * Selects *n* values from a set of m > n random inputs
+ * @param values The weighted values
+ * @param n the number of values to select
+ */
+vector<int> weightedPicks(WeightedValues &values, int n)
+{
+    vector<int> picks;
+    for (int i = 0; i < n; i++) {
+        picks.push_back(weightedPicks(values))
+    };
+
+    return picks
+};
+
+/**
+ * Converts the distance between 2 rooms and the clustering factor
+ * into a weight
+ * @param distance Distance between 2 buildings
+ * @param clustering factor of hallways
+ * @param noRooms The total number of rooms
+ */
+
+
+
 /**
  * Generates the triples for a sample building dataset
  * @param rooms number of rooms to generate
@@ -112,6 +180,8 @@ Triples generateBuildingTriples(
             y : rand() % bound
         });
     };
+
+
 
     void createPath(int l, int r)
     {

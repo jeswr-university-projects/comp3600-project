@@ -94,15 +94,6 @@ Triples getTriples(string file) {
 
 
 int main(int argc, char *argv[]) {
-
-    
-    vector<int> v = {};
-    // return 1;
-    v[10] = 5;
-
-    return v[10];
-
-    return 0;
     if (argc < 2) {
         cout << "Please supply name of .ttl document";
     } else {
