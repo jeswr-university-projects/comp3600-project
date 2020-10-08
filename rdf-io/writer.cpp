@@ -1,5 +1,5 @@
 #include <iostream>
-#include "rdf-types.h"
+#include "../rdf-types.h"
 using namespace std;
 
 /**
