@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
-#include "writer.cpp"
+#include "../rdf-io/writer.cpp"
 #include <random>
 
 using namespace std;
@@ -110,12 +110,12 @@ int weightedPick(WeightedValues &values)
 vector<int> weightedPicks(WeightedValues &values, int n)
 {
     vector<int> picks;
-    for (int i = 0; i < n; i++)
-    {
-        picks.push_back(weightedPicks(values))
-    };
+    // for (int i = 0; i < n; i++)
+    // {
+    //     // picks.push_back(weightedPicks(values))
+    // };
 
-    return picks
+    return picks;
 };
 
 /**
@@ -138,7 +138,7 @@ double weight(double distance, double clustering, int order, int noRooms, int no
     // Weight according to the *clustering* input value
     return clustering < 0.5 
         ?   (distance * clustering + (0.5 - clustering) * random ) * 2 
-        :   ( (clustering - 0.5) * cluster + (1 - clustering) * distance ) * 2 
+        :   ( (clustering - 0.5) * cluster + (1 - clustering) * distance ) * 2;
 };
 
 /**
@@ -200,23 +200,23 @@ Triples generateBuildingTriples(
         });
     };
 
-    void createPath(int l, int r)
-    {
+    // void createPath(int l, int r)
+    // {
 
-        int distance = int(
-            sqrt(
-                pow(positionedRooms[l].x - positionedRooms[r].x, 2) +
-                pow(positionedRooms[l].y - positionedRooms[r].y, 2)));
+    //     int distance = int(
+    //         sqrt(
+    //             pow(positionedRooms[l].x - positionedRooms[r].x, 2) +
+    //             pow(positionedRooms[l].y - positionedRooms[r].y, 2)));
 
-        triples.push_back({"http://example.org/room#" + l,
-                           "http://architecture#hasPathTo",
-                           "http://example.org/room#" + r});
+    //     triples.push_back({"http://example.org/room#" + l,
+    //                        "http://architecture#hasPathTo",
+    //                        "http://example.org/room#" + r});
 
-        // TODO: CHECK IF WE WANT TRANSITIVITY - if so uncomment code below
-        // triples.push_back({"http://example.org/room#" + r,
-        //                    "http://architecture#hasPathTo",
-        //                    "http://example.org/room#" + l});
-    };
+    //     // TODO: CHECK IF WE WANT TRANSITIVITY - if so uncomment code below
+    //     // triples.push_back({"http://example.org/room#" + r,
+    //     //                    "http://architecture#hasPathTo",
+    //     //                    "http://example.org/room#" + l});
+    // };
 
     // For now we just place the paths randomly?
     // Use taken type code from above?
@@ -251,8 +251,16 @@ void generatePeopleFile(int noPeople, int noRooms, Prefixes prefixes, string fil
  * @param avgNeighbours - the average number of rooms that are neighbours
  * @params clustering [0-100] - 0 no clustering, connections are more or less random; 100 - high clustering will connect to immediate neighbours
  */
-void generateBuildingFile(int rooms, int avgNeighbours, int clustering, string file)
-{
+// void generateBuildingFile(int rooms, int avgNeighbours, int clustering, string file)
+// {
 
-    writeTriples(generateBuildingTriples(rooms, avgNeighbours, clustering), defaultPrefixes, file);
-};
+//     writeTriples(generateBuildingTriples(rooms, avgNeighbours, clustering), defaultPrefixes, file);
+// };
+
+int main() {
+    cout << "Tests running ..." << endl;
+    cout << "Tests complete ..." << endl << endl;
+    cout <<  "Gee .. wasn't that fast, I guess we will have to wait until all the algorithms" << endl;
+    cout <<  "are written to see how long this actually takes" << endl;
+    return 0;
+}

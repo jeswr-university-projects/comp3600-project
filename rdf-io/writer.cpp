@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "../rdf-types.h"
 using namespace std;
 

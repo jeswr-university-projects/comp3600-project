@@ -163,21 +163,21 @@ struct Graph {
 
     int edgeCount()
     {
-        return 
+        return edges;
     };
 
-    void _djikstra(int start) 
-    {
-        array<bool> visited[]
+    // void _djikstra(int start) 
+    // {
+    //     array<bool> visited[]
         
-        vector<int> visited = {};
+    //     vector<int> visited = {};
 
-    }
+    // }
 
-    void djikstra(string start)
-    {
-        return _djikstra(nameToId(start))
-    }
+    // void djikstra(string start)
+    // {
+    //     return _djikstra(nameToId(start))
+    // }
 
     private:
         // Converts beteen name of entry

@@ -1,389 +1,161 @@
-// #include <iostream>
-// #include <fstream>
-// #include <vector>
-// #include <map>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <map>
+#include <boost/program_options.hpp>
 // #include "rdf-types.h"
-// using namespace std;
+#include "rdf-io/reader.cpp"
+using namespace std;
+using namespace boost;
+using namespace boost::program_options;
 
-// string component(ifstream &inFile, Prefixes &prefixes) {
-//     bool isURI = true;
-//     bool hasPrefix = false;
-//     char breakAt = '>';
-//     char c;
-//     string val;
-//     inFile >> c;
-
-//     if (c == '<') {
-//         inFile >> c;
-//     } else if (c == '"') {
-//         inFile >> c;
-//         bool isURI = false;
-//         breakAt = '"';
-//     } else {
-//         hasPrefix = true;
-//         breakAt = ' ';
-//     }
-
-//     // Assume URI in this loop
-//     while (c != breakAt && !(hasPrefix && (c == ',' || c == ';' || c == '.'))) {
-//         if (c == ':' && hasPrefix) {
-//             // This is when the triple has a prefix rather than a full uri
-//             val = prefixes[val];
-//         } else {
-//             val = val + c;
-//         }
-
-//         c = inFile.get(); // We care about whitespace here   
-//     }
-
-//     if (val.length() == 1 && val[0] == 'a') {
-//         return "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-//     }
-
-//     if (c == ',') {
-//         inFile.putback(c);
-//     }
-
-//     return val;
-// }
-
-// Triples getTriples(string file) {
-//     ifstream inFile(file);
-//     Triples triples = {};
-//     Prefixes prefixes = {};
-//     char c;
-//     inFile >> c;
-
-//     while (c == '@') {
-//         // Skips over the expected word 'prefix'
-//         inFile.seekg(inFile.tellg() + (std::streampos)6) >> c;
-//         string key;
-
-//         while ( c != ':' ) {
-//             key += c;
-//             c = inFile.get();
-//         }
-//         inFile >> c;
-
-//         while ( (c = inFile.get()) != '>' ) {
-//             prefixes[key] += c;
-//         }
-//         inFile >> c >> c;
-//     }
-
-//     inFile.putback(c);
-
-//     while (inFile.peek() >= 0) {
-//         string s = component(inFile, prefixes);
-//         string p = component(inFile, prefixes);
-//         string o = component(inFile, prefixes);
-//         triples.push_back({s, p, o});
-//         inFile >> c;
-
-//         while (c == ';' || c == ',') {
-//             if (c == ';') {
-//                 p = component(inFile, prefixes);
-//             }
-//             o = component(inFile, prefixes);
-//             triples.push_back({s, p, o});
-//             inFile >> c;
-//         }
-//     }
-//     return triples;
-// }
-
-
-int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        cout << "Please supply name of .ttl document";
-    } else {
-        Triples triples = getTriples(argv[1]);
-        for (int i = 0; i < triples.size(); i++) {
-            cout << triples[i][0] << ' ' << triples [i][1] << ' ' << triples[i][2] << '\n';
+Triples ingestCliTriples(string file, variables_map vm)
+{
+    if (vm.count(file))
+    {
+        try
+        {
+            Triples triples = getTriples(vm[file].as<string>());
+            cout << "ingested triples ..." << endl;
+            for (Triple t : triples)
+            {
+                cout << t[0] << ' ' << t[1] << ' ' << t[2] << endl;
+            };
+            cout << endl;
+            return triples;
         }
+        catch (int e)
+        {
+            throw error("Invalid file"  + file + "; please fix");
+        };
     }
-    return 0;
+    else
+    {
+        throw error("Please specify the " + file + " in order to run this command");
+    };
 }
 
+int main(int argc, char *argv[])
+{
+    // Declare the supported options.
+    options_description desc("Allowed options");
+    desc.add_options()("help,h", "produce help message")("building-file,b", value<string>(), "A .ttl file (to read) containing information about the architecture of the building")("person-file,p", value<string>(), "A .ttl file (to read) containing information the location of people in the building")("escape-file,e", value<string>(), "A .ttl file (to read/write) containing the escape paths to be taken by those in the building")("risk-file,s", value<string>(), "A .ttl file (to read/write) containing the escape paths to be taken by those in the building")("diagnostic-file,d", value<string>(), "A .txt file (to write) which contains diagonstics of running the algorithm")("calculate-paths,c", "Calculate the escape path to be taken")("calculate-risk,r", "Calculate the risk of catching covid")("run-diagnostics,i", "Run diagonstics on the program and output to the assigned .txt file");
 
-// string component(ifstream &inFile, map<string, string> &prefixes) {
-//     bool isURI = true;
-//     bool hasPrefix = false;
-//     char breakAt = '>';
-//     char c;
-//     string val;
-//     inFile >> c;
+    variables_map vm;
+    store(parse_command_line(argc, argv, desc), vm);
+    notify(vm);
 
-//     if (c == '<') {
-//         inFile >> c;
-//     } else if (c == '"') {
-//         inFile >> c;
-//         bool isURI = false;
-//         breakAt = '"';
-//     } else {
-//         hasPrefix = true;
-//         breakAt = ' ';
-//     }
+    bool diagnostics = vm.count("run-diagnostics");
+    Triples building, person, escape, risk;
 
-//     // Assume URI in this loop
-//     while (c != breakAt && !(hasPrefix && (c == ',' || c == ';' || c == '.'))) {
-//         if (c == ':' && hasPrefix) {
-//             // This is when the triple has a prefix rather than a full uri
-//             val = prefixes[val];
-//         } else {
-//             val = val + c;
-//         }
+    if (vm.count("help"))
+    {
+        cout << desc << "\n";
+        return 1;
+    }
 
-//         c = inFile.get(); // We care about whitespace here
-        
-//     }
+    if (vm.count("calculate-paths"))
+    {
+        building = ingestCliTriples("building-file", vm);
+        person = ingestCliTriples("person-file", vm);
+        if (!vm.count("escape-file")) {
+            throw error("Please specify the escape-file in order to run this command");
+        };
+        //escape = ingestCliTriples("escape-file", vm);
+    };
 
-//     cout << 'x' << ' ' << c << '\n';
+    if (vm.count("calculate-risk"))
+    {
+        building = ingestCliTriples("building-file", vm);
+        person = ingestCliTriples("person-file", vm);
+        escape = ingestCliTriples("escape-file", vm);
+        risk = ingestCliTriples("risk-file", vm);
+    };
 
-//     if (val.length() == 1 && val[0] == 'a') {
-//         return "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-//     }
-
-//     return val;
-// }
-
-// vector<vector<string>> getTriples(string file) {
-//     ifstream inFile(file);
-//     vector<string[3]> triples = {};
-//     map<string, string> prefixes = {};
-//     char c;
-//     inFile >> c;
-
-//     while (c == '@') {
-//         // Skips over the expected word 'prefix'
-//         inFile.seekg(inFile.tellg() + (std::streampos)6) >> c;
-//         string key;
-
-//         while ( (c = inFile.get()) != ':') {
-//             key += c;
-//         }
-
-//         inFile >> c >> c;
-
-//         while ( (c = inFile.get()) != '>' ) {
-//             prefixes[key] += c;
-//         }
-
-//         inFile >> c >> c;
-//     }
-
-//     inFile.putback(c);
-
-//     while (!inFile.eof()) {
-//         string s = component(inFile, prefixes);
-//         string p = component(inFile, prefixes);
-//         string o = component(inFile, prefixes);
-//         triples.push_back({s, p, o});
-//         inFile >> c;
+    if (vm.count("run-diagnostics"))
+    {
+        if (!vm.count("diagnostics-file")) {
+            throw error("Please specify location to output diagnostics file");
+        }
+    };
 
 
-//         while (c == ';' || c == ',') {
-//             if (c == ';') {
-//                 p = component(inFile, prefixes);
-//             }
-//             o = component(inFile, prefixes);
-//             triples.push_back({s, p, o});
-//             inFile >> c;
-//         }
-        
-//         if (triples.size() == 6) {
-//             break;
-//         }
-        
-//     }
-//     return triples;
-// }
 
 
-// int main(int argc, char *argv[]) {
-//     if (argc < 2) {
-//         cout << "Please supply name of .ttl document";
-//     } else {
-//         vector<vector<string>> triples = getTriples(argv[1]);
-//         for (int i = 0; i < triples.size(); i++) {
-//             cout << triples[i][0] << ' ' << triples [i][1] << ' ' << triples[i][2] << '\n';
-//         }
-//     }
-//     ret
 
 
-// ifstream inFile(argv[1]);
-//         vector<vector<string>> triples = {};
-//         map<string, string> prefixes = {};
-//         char c;
-               
-//         // Extract prefixes from file
-//         while (true) {
-//             inFile >> c;
-//             if (c != '@') {
-//                 inFile.putback(c);
-//                 break;
-//             } else {
-//                 // Move over word 'prefix'
-//                 inFile >> c;
-//                 inFile >> c;
-//                 inFile >> c;
-//                 inFile >> c;
-//                 inFile >> c;
-//                 inFile >> c;
-//                 inFile >> c;
-//             }
+    // building.
 
-//             string key;
-//             string val;
+    //     vm["compression"]
 
-//             while (c != ':') {
-//                 key += c;
-//                 inFile >> c;
-//             }
+        // Performing checks to make sure
 
-//             inFile >> c;
-//             inFile >> c;
+        // if (vm.count("compression"))
+        // {
+        //     cout << "Compression level was set to "
+        //          << vm["compression"].as<int>() << ".\n";
+        // }
+        // else
+        // {
+        //     cout << "Compression level was not set.\n";
+        // }
 
-//             while ( c != '>' ) {
-//                 val += c;
-//                 inFile >> c;
-//             }
+        // if (argc < 3)
+        // {
+        //     cout << "Please supply the documents for the building and persons";
+        // }
+        // else
+        // {
+        //     Triples building, people;
 
-//             inFile >> c;
-//             prefixes[key] = val;
-//         }
-        
-//         // Assume that the ttl file does not cotain any syntax errors
-//         while (true) {
-//             cout << 'a';
-//             string s = component(inFile, prefixes);
-//             cout << 'b';
-//             string p = component(inFile, prefixes);
-//             cout << 'c';
-//             string o = component(inFile, prefixes);
-//             triples.push_back({s, p, o});
-//             cout << 1;
-//             c = inFile.get();
-//             while (c == ' ') {
-//                 c = inFile.get();
-//             }
-//             cout << 2;
-            
-//             while (c == ';' || c == ',') {
+        // try
+        // {
+        //     Triples building = getTriples(argv[1]);
+        //     cout << "ingested building triples ..." << endl;
+        //     for (Triple t : building)
+        //     {
+        //         cout << t[0] << ' ' << t[1] << ' ' << t[2] << endl;
+        //     };
+        //     cout << endl;
+        // }
+        // catch (int e)
+        // {
+        //     cout << "Invalid building file; please fix";
+        //     return 0;
+        // };
 
-//                 if (c == ';') {
-//                     string p = component(inFile, prefixes);
-//                 }
-//                 string o = component(inFile, prefixes);
-//                 triples.push_back({s, p, o});
+        //     try
+        //     {
+        //         Triples people = getTriples(argv[2]);
+        //         cout << "ingested person triples ..." << endl;
+        //         for (Triple t : people)
+        //         {
+        //             cout << t[0] << ' ' << t[1] << ' ' << t[2] << endl;
+        //         };
+        //     }
+        //     catch (int e)
+        //     {
+        //         cout << "Invalid person file; please fix";
+        //         return 0;
+        //     };
+        // };
 
-//                 // cout << 1 << c << '\n';
-//                 c = inFile.get();
-//                 // cout << 2 << c << '\n';
-//                 while (c == ' ') {
-//                     c = inFile.get();
-//                 }
-//                 // cout << 3 << c << '\n';
-                
+        // bool paths = true;
+        // bool risk = true;
+        // bool diagonstics = false;
+        // vector<char> opt;
 
-//                 if (c != '.' && c != ';' && c != ',') {
-//                     // cout << c << '\n';
-//                 }
-//                 cout << 3;
+        // for (int i = 3; i <= argc; i++)
+        // {
+        //     x = program_options.()
+        //             string s = argv[i];
+        //     for (int i = 1; i < s.length(); i++)
+        //     {
+        //         cout << s[i] << endl;
+        //     };
+        //     cout << 5;
+        // };
 
-//             }
-
-//             cout << 4;
-
-//             cout << c << '\n';
-//             if (c != '.') {
-//                 break;
-//             }
-//             // break;
-//         }
-//         inFile.close();
-//         cout << triples.size();
-//         cout << triples[0][0] << ' ' << triples[0][1] << ' ' << triples[0][2] << '\n';
-//         cout << triples[1][0] << ' ' << triples[1][1] << ' ' << triples[1][2] << '\n';
-//         cout << triples[2][0] << ' ' << triples[2][1] << ' ' << triples[2][2] << '\n';
-//     }
-            
-            
-            // string s;
-            // string p;
-            // string o;
-            // char delimeter;
-            // bool isURI = true;
-            // bool hasPrefix = false;
-            // char breakAt = '>';
-
-            // if (c == '<') {
-            //     inFile >> c;
-            // } else if (c == '"') {
-            //     inFile >> c;
-            //     bool isURI = false;
-            //     breakAt = '"';
-            // } else {
-            //     hasPrefix = true;
-            //     breakAt = ' ';
-            // }
-
-            // // Assume URI in this loop
-            // while (c != breakAt) {
-            //     if (c == ':' && hasPrefix) {
-            //         // This is when the triple has a prefix rather than a full uri
-            //         s = prefixes[s];
-            //     } else {
-            //         s = s + c;
-            //     }
-            //     c = inFile.get(); // We care about whitespace here
-            // }
-
-            // inFile >> c;
-
-            // // Assume URI in this loop
-            // while ( 
-            //     hasPrefix ? (c != ' ') : (c != '>')
-            //     ) {
-            //     if (c == ':' && hasPrefix) {
-            //         // This is when the triple has a prefix rather than a full uri
-            //         p = prefixes[p];
-            //     } else {
-            //         p = p + c;
-            //     }
-            //     c = inFile.get(); // We care about whitespace here
-            // }
-
-            // inFile >> c;
-
-            // if (c == '"') {
-            //     while ( 
-            //     hasPrefix ? (c != ' ') : (c != '>')
-            //     ) {
-            //     if (c == ':' && hasPrefix) {
-            //         // This is when the triple has a prefix rather than a full uri
-            //         o = prefixes[o];
-            //     } else {
-            //         o = o + c;
-            //     }
-            //     c = inFile.get(); // We care about whitespace here
-            // }
-            // } else {
-            //     while ( 
-            //         c != '"'
-            //     ) {
-            //     o = o + c;
-            //     c = inFile.get(); // We care about whitespace here
-            //     }
-            // }
-          
-            // if (p.length() == 1 && s[0] == 'a') {
-            //     //p = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type';
-            // }
-
-            // triples.push_back({s, p, o});
-
-            // // inFile >> delimeter;
-
-            // break;
+        return 0;
+};

@@ -1,8 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <map>
-#include "rdf-types.h"
+#include "../rdf-types.h"
 using namespace std;
 
 /**

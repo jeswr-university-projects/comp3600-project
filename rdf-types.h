@@ -1,12 +1,13 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include <cstdlib>
 using namespace std;
 
 /**
  * An RDF 3-triple https://www.w3.org/TR/n-triples
  */
-typedef array<string, 3> Triple;
+typedef std::array<string, 3> Triple;
 
 /**
  * A collection of RDF 3-triples
@@ -50,11 +51,11 @@ typedef vector<SubjectData> SubjectsData;
  */
 typedef map<string, string> Prefixes;
 
-/**
- * Standard prefixes used in this application
- * TODO: CHECK IF THIS IS AN APPROPRIATE LOCATION
- */
-Prefixes defaultPrefixes = {
-    {"room", "http://example.org/room#"},
-    {"person", "http://example.org/person#"},
-    {"ach", "http://architecture#"}};
+// /**
+//  * Standard prefixes used in this application
+//  * TODO: CHECK IF THIS IS AN APPROPRIATE LOCATION
+//  */
+// Prefixes defaultPrefixes = {
+//     {"room", "http://example.org/room#"},
+//     {"person", "http://example.org/person#"},
+//     {"ach", "http://architecture#"}};
