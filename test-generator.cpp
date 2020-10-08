@@ -54,7 +54,8 @@ struct PositionRoom
     int y;
 };
 
-struct WeightedValue {
+struct WeightedValue
+{
     int value;
     double weight;
 };
@@ -64,7 +65,8 @@ typedef vector<WeightedValue> WeightedValues;
 /**
  * Generates random double in a given range
  */
-double randDouble(double min, double max) {
+double randDouble(double min, double max)
+{
     return min + ((double)rand() / RAND_MAX) * (max - min);
 };
 
@@ -75,10 +77,12 @@ double randDouble(double min, double max) {
  * Also has the side-effecting behavior of removing the selected value from the values array so that
  * we can do multiple-non repeated selections
  */
-int weightedPick(WeightedValues &values) {
+int weightedPick(WeightedValues &values)
+{
     double totalWeight = 0;
 
-    for (int i = 0; i < values.size(); i++) {
+    for (int i = 0; i < values.size(); i++)
+    {
         totalWeight += values[i].weight;
     };
 
@@ -87,11 +91,12 @@ int weightedPick(WeightedValues &values) {
     double randCum = randDouble(0, totalWeight);
     int index = -1;
 
-    while (randCum >= 0) {
+    while (randCum >= 0)
+    {
         index++;
         randCum -= values[index].weight;
     };
-    
+
     int value = values[index].value;
 
     return value;
@@ -105,7 +110,8 @@ int weightedPick(WeightedValues &values) {
 vector<int> weightedPicks(WeightedValues &values, int n)
 {
     vector<int> picks;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         picks.push_back(weightedPicks(values))
     };
 
@@ -117,10 +123,23 @@ vector<int> weightedPicks(WeightedValues &values, int n)
  * into a weight
  * @param distance Distance between 2 buildings
  * @param clustering factor of hallways
+ * @param closest building has 1 order, farthest has noRooms
  * @param noRooms The total number of rooms
  */
+double weight(double distance, double clustering, int order, int noRooms, int noNeighbours, double farthestDistance)
+{
+    // At 1 we are totally dependent on the ordering
+    double cluster = order <= noRooms ? 1 : 0;
+    // At 0.5 we are totally dependent on the distance
+    double distance = 1 - (distance/farthestDistance);
+    // At 0 we are totall random
+    double random = 1;
 
-
+    // Weight according to the *clustering* input value
+    return clustering < 0.5 
+        ?   (distance * clustering + (0.5 - clustering) * random ) * 2 
+        :   ( (clustering - 0.5) * cluster + (1 - clustering) * distance ) * 2 
+};
 
 /**
  * Generates the triples for a sample building dataset
@@ -180,8 +199,6 @@ Triples generateBuildingTriples(
             y : rand() % bound
         });
     };
-
-
 
     void createPath(int l, int r)
     {

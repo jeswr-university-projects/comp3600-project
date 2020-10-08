@@ -22,7 +22,7 @@ escape_planner building_x_architectrue.ttl persons_x_building_x.ttl ex:Alice htt
 | ----------- | -------------------------------------------------------------------------------------------------|
 | p           | Calculate and write paths                                                                        |
 | r           | Calculate and write risk of catching COVID - This can only be called *after* -p has been called  |
-| s | Show timing diagnostics |
+| s           | Show timing diagnostics                                                                          |
 
 If none are specified, `-pr` is run
 
