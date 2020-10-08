@@ -9,6 +9,7 @@
         "iosfwd": "cpp",
         "random": "cpp",
         "iostream": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "map": "cpp"
     }
 }

@@ -2,7 +2,33 @@
 #include <iostream>
 #include "graph.h"
 #include <limits>
+#include <map>
 using namespace std;
+
+// move23 a move .
+// move23 moveTime t .
+// move23 moveTo nodeX .
+// This is a dynamic programming problem as we can break problems into an acyclic graph over time
+
+
+
+
+// Assume that infection risk is not increased in hallway traversals
+// as they are *spread out* through the hallway and they
+// are already at risk in the rooms they have gone to/from
+
+// Add assumption about infection risk having to be
+// calculated at a separate stage going directly from the
+// RDF file - this makes sense as we should not be calculating
+// the infection risk *whilst* working out the safest way
+// to get everyone out of the building. This allows us to
+// just write the functionality directly from read in triple.
+// We can also expand on the complexity of reading in this particlar data.
+// First we need
+
+// Add assumption that the compiler being used is
+// doing this <https://stackoverflow.com/questions/35052586/is-it-more-efficient-to-store-vector-size-into-an-int-variable-when-using-it-mul>
+// optimisation
 
 // Add assumption about the number of nodes begin
 // less than the numeric limit of int in the system
@@ -34,20 +60,23 @@ vector<string> djikstras(string start, string end, GraphWithIdInternals<Id> grap
 
     distance[current] = currentDistance;
 
+    // TODO: FIX THE SECOND CONDITION IN THIS LOOP
     while (!visited[endId] && currentDistance != Infinity)
     {
-        vector<weightedEdge> edges = graph.weightedEdges(current);
+        // vector<weightedEdge> edges = graph.weightedEdges(current);
 
         int minTentative = Infinity;
         Id nextId;
 
-        for (int i = 0; i < edges.size(); i++)
+        for (weightedEdge edge : graph.weightedEdges(current))
         {
             // Check to make sure the node has not yet been visited
-            if (!visited[edges[i].object]) {
+            if (!visited[edges[i].object])
+            {
                 int tentativeDistance = edges[i].weight + currentDistance;
 
-                if (tentativeDistance < minTentative) {
+                if (tentativeDistance < minTentative)
+                {
                     minTentative = tentativeDistance;
                     nextId = i;
                 };
@@ -61,18 +90,101 @@ vector<string> djikstras(string start, string end, GraphWithIdInternals<Id> grap
     };
 
     // Now we extract the root from that
+    vector<string> path = {start};
+    Id focus = startId;
+
+    while (focus != endId)
+    {
+        int min = Infinity;
+
+        for (weightedEdge edge : graph.weightedEdges(focus))
+        {
+            if ((int temp = distance[edge.object]) < min)
+            {
+                min = temp;
+                focus = edge.object;
+            };
+        };
+
+        path.push_back(graph.fromId(focus));
+    };
+
+    return path;
+};
+
+template <typename Id = int>
+bool isNotEnd(Id n, vector<Id> &endIds)
+{
+    for (int i : endIds)
+    {
+        if (i == n)
+        {
+            return false;
+        };
+    };
+    return true;
+};
+
+struct nodeInfo {
+    bool end = true;
+    bool visited = false;
+    int weight = 0;
+};
+
+struct Info {
+    bool end = true;
+    bool visited = false;
+    int weight = 0;
+};
+
+template <typename Id = int>
+map<Id, vector<Id>> multiStartMultiEnd(vector<Id> starts, vector<Id> ends, GraphWithIdInternals<Id> graph)
+{
+    map<Id, vector<Id>> paths;
+    map<Id, Info> ending;
+    for (Id end: ends)
+    {
+        ending[end] = {
+            end: true;
+            weight: 0;
+        };
+    };
+    for (Id start: starts) 
+    {
+        // TODO:
+    };
+};
+
+
+
+template <typename Id = int>
+vector<string> djikstrasMultiEndpoint(string start, vector<string> end, GraphWithIdInternals<Id> graph)
+{
+    map<Id, 
     
+    
+    
+    
+    Id room = graph.toId(start);
+    int distance = Infinity;
 
+    vector<bool> visited(graph.nodeCount(), false);
+    vector<int> dist(graph.nodeCount(), Infinity);
 
-    // for (int i = 0; i < edges.size(); i++)
-    // {
-    // };
+    vector<Id> endIds;
+    for (string e : end)
+    {
+        endIds.push_back(graph.toId(e));
+    };
 
-    // edges[0].object
-    //     //
+    while (isNotEnd(room))
+    {
 
-    //     bool visited[graph.nodeCount()];
-    // return {};
+    }
+
+        dist[room] = 0;
+    visited[room] = true;
+
 };
 
 // Since we are working with multiple exits we extend djikstras algorithm
