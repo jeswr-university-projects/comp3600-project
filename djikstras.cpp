@@ -160,10 +160,7 @@ map<Id, vector<Id>> multiStartMultiEnd(vector<Id> starts, vector<Id> ends, Graph
 template <typename Id = int>
 vector<string> djikstrasMultiEndpoint(string start, vector<string> end, GraphWithIdInternals<Id> graph)
 {
-    map<Id, 
-    
-    
-    
+   
     
     Id room = graph.toId(start);
     int distance = Infinity;
