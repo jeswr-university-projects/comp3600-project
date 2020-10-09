@@ -13,9 +13,9 @@ using namespace std;
  * command line options include those to 
  */
 
-int main(int argc, char *argv[]){
+// int main(int argc, char *argv[]){
 
-};
+// };
 
 /**
  * Randomly generate a number over a given
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
 int genPositive(int mean, double variance)
 {
     std::default_random_engine generator;
-    std::normal_distribution<int> distribution(mean, variance);
+    std::normal_distribution<float> distribution(mean, variance);
 
     int out;
     // Generate a number of neighbours that is strictly positive
@@ -35,7 +35,7 @@ int genPositive(int mean, double variance)
     {
     };
 
-    return out;
+    return 1; //out;
 };
 
 /**
@@ -131,14 +131,15 @@ double weight(double distance, double clustering, int order, int noRooms, int no
     // At 1 we are totally dependent on the ordering
     double cluster = order <= noRooms ? 1 : 0;
     // At 0.5 we are totally dependent on the distance
-    double distance = 1 - (distance/farthestDistance);
+    // TODO: CHANGE ALL THIS TO FLOATS
+    double ds = 1.0 - (distance/farthestDistance);
     // At 0 we are totall random
-    double random = 1;
+    double random = 1.0;
 
     // Weight according to the *clustering* input value
     return clustering < 0.5 
-        ?   (distance * clustering + (0.5 - clustering) * random ) * 2 
-        :   ( (clustering - 0.5) * cluster + (1 - clustering) * distance ) * 2;
+        ?   (ds * clustering + (0.5 - clustering) * random ) * 2.0 
+        :   ( (clustering - 0.5) * cluster + (1.0 - clustering) * ds ) * 2.0;
 };
 
 /**
@@ -199,7 +200,7 @@ Triples generateBuildingTriples(
             y : rand() % bound
         });
     };
-
+    return {};
     // void createPath(int l, int r)
     // {
 
@@ -260,7 +261,7 @@ void generatePeopleFile(int noPeople, int noRooms, Prefixes prefixes, string fil
 int main() {
     cout << "Tests running ..." << endl;
     cout << "Tests complete ..." << endl << endl;
-    cout <<  "Gee .. wasn't that fast, I guess we will have to wait until all the algorithms" << endl;
-    cout <<  "are written to see how long this actually takes" << endl;
+    cout <<  "Gee .. wasn't that fast, I guess we will have to wait until all the algorithms are written to see how long this actually takes." << endl;
+    cout << "The good news is if you check out the file test/test-generator.cpp you can see that a large portion of the testing framework for this program is already implemented (yay!)" << endl;
     return 0;
 }
