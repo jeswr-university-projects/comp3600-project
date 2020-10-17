@@ -8,7 +8,7 @@ struct Node {
 
 
 template<typename Value = int>
-struct AVL {
+struct RBtree {
 
     void insert(Value val);
     void del(Val val);
@@ -18,5 +18,6 @@ struct AVL {
     void bulkDelete(Value val[]);
 
     private:
+        void recolour();
         vector<Node<Value>> nodes;      
 };
