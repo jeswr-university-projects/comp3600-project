@@ -12,56 +12,67 @@ using namespace std;
 //     value: V;
 // };
 
-template<typename K, typename T>
-struct Node {
-    key: K;
-    value: T;
-    next: &Node;
+template <typename K, typename T>
+struct Node
+{
+    key : K;
+    value : T;
+    next : &Node;
 };
+
+typedef struct Node Node;
 
 // class KeyValLinkedList {
 
 // };
 
-
-template<typename T, typename K>
-class HashMap {
-
-    HashMap(int _len) {
+template <typename T, typename K>
+class HashMap
+{
+public:
+    HashMap(int _len)
+    {
         len = _len;
-
+        Node val[len];
     };
 
     // Generic string hash, but noting that
     // credit (https://computinglife.wordpress.com/2008/11/20/why-do-hash-functions-use-prime-numbers/)
     // the http:// is going to be universal over
     // most/all urls we choose to skip it
-    int hash(string key) {
+    int hash(string key)
+    {
         int h = 1;
-        for (int i = 6; i < key.length(); i++) {
-            h = h*31 + key[i];
+        for (int i = 6; i < key.length(); i++)
+        {
+            h = h * 31 + key[i];
         };
         return h;
     };
 
     // If the hash is an int we just use that
-    int hash(int key) {
+    int hash(int key)
+    {
         return key;
     };
-    
+
     // Returns the pointer to that starting node
     // in the linked list corresponding to the given
     // key
-    Node &start(T key) {
+    Node &start(T key)
+    {
         return val[hash(key) % len];
     };
 
-    void add(T key, K value) {
+    void add(T key, K value)
+    {
         Node ptr = start(key);
         // Checking the pointer is non null
-        while (ptr) {
+        while (ptr)
+        {
             // Key already exists in the linked list
-            if (ptr.key == key) {
+            if (ptr.key == key)
+            {
                 ptr.value = value;
                 return;
             };
@@ -72,55 +83,72 @@ class HashMap {
             value : value
         };
     };
-
-    void remove(T key) {
+    // Delete the thing at the pointer value?
+    void remove(T key)
+    {
         Node ptr = start(key);
-        while (ptr) {
-            if (ptr.key == key) {
-                
+        while (ptr)
+        {
+            if (ptr.key == key)
+            {
+                ptr = ptr.next;
             };
         };
     };
+    // Delete the thing at the pointer value rather
+    // than just setting null?
+    void clear()
+    {
+        for (Node ptr : val)
+        {
+            ptr = nullptr;
+        };
+    };
 
-    void clear();
-    
-    K get(T key) {
+    K get(T key)
+    {
         Node ptr = start(key);
-        while (ptr) {
-            if (ptr.key == key) {
+        while (ptr)
+        {
+            if (ptr.key == key)
+            {
                 return ptr.value;
             };
             ptr = ptr.next;
         };
     };
 
-    private:
-        int len;
-        array<int, len> val;
+private:
+    int len;
+    Node val[];
 };
 
-
-
-
+int main()
+{
+    HashMap<string, string> map(10);
+    map.add("Hello", "booo");
+    cout << map.get("Hello") << endl;
+    return 0;
+};
 
 // class HashMap {
 
-    // // Generic string hash, but noting that
-    // // credit (https://computinglife.wordpress.com/2008/11/20/why-do-hash-functions-use-prime-numbers/)
-    // // the http:// is going to be universal over
-    // // most/all urls we choose to skip it
-    // int hash(string key) {
-    //     int h = 1;
-    //     for (int i = 6; i < key.length(); i++) {
-    //         h = h*31 + key[i];
-    //     };
-    //     return h;
-    // };
+// // Generic string hash, but noting that
+// // credit (https://computinglife.wordpress.com/2008/11/20/why-do-hash-functions-use-prime-numbers/)
+// // the http:// is going to be universal over
+// // most/all urls we choose to skip it
+// int hash(string key) {
+//     int h = 1;
+//     for (int i = 6; i < key.length(); i++) {
+//         h = h*31 + key[i];
+//     };
+//     return h;
+// };
 
-    // // If the hash is an int we just use that
-    // int hash(int key) {
-    //     return key;
-    // };
+// // If the hash is an int we just use that
+// int hash(int key) {
+//     return key;
+// };
 
 //     //
 //     K get(T key) {
