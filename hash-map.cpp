@@ -22,7 +22,7 @@ struct Node
     };
     K key;
     T value;
-    Node<T, K> *next = NULL;
+    Node<T, K> *next;
 };
 
 // typedef struct Node Node;
@@ -142,21 +142,26 @@ struct Map
     Map(int len)
     {
         this->len = len;
+        cout << len << endl;
         this->val = (Node<T, K> **) calloc(len, sizeof(int));
     };
 
-    // K get(T key)
-    // {
-    //     Node<T, K> ptr = (this->start)(key);
-    //     while (ptr != NULL)
-    //     {
-    //         if (ptr->key == key)
-    //         {
-    //             return ptr->value;
-    //         };
-    //         ptr = ptr->next;
-    //     };
-    // };
+    K get(T key)
+    {
+        Node<T, K> *ptr = this->start(key);
+
+        // cout << ptr->next << endl;
+        while (ptr != NULL)
+        {
+            if (ptr->key == key)
+            {
+                return ptr->value;
+            };
+            ptr = ptr->next;
+        };
+        cout << "Invalid key used in hash" << endl;
+        throw 20;
+    };
 
     void add(T key, K value)
     {
@@ -164,6 +169,7 @@ struct Map
         
         
         // Node<T, K> *ptr = (this->start)(key);
+        // cout << ptr << endl;
         // cout << (ptr == NULL) << endl;
         // cout << (ptr == NULL) << endl;
         // cout << (ptr == NULL) << endl;
@@ -181,6 +187,7 @@ struct Map
         while (ptr != NULL)
         {
             // Key already exists in the linked list
+            cout << "IN LOOP" << endl;
             if (ptr->key == key)
             {
                 ptr->value = value;
@@ -188,7 +195,10 @@ struct Map
             };
             ptr = ptr->next;
         };
-        ptr = new Node<T, K>(key, value);
+        cout << "about to add pointer" << endl;
+        *ptr = *new Node<T, K>(key, value);
+        cout << "after adding pointer" << endl;
+        // &ptr = x;
     };
 
 private:
@@ -209,6 +219,7 @@ private:
 
     Node<T, K> *start(T key)
     {
+        cout << "hash" << hash(key) % (this->len) << " "; 
         return this->val[hash(key) % (this->len)];
     };
 
@@ -219,9 +230,13 @@ private:
 int main()
 {
     Map<string, string> map(10);
+    // map.get("http://example.org/person5");
     map.add("http://example.org/person1", "p1");
-    // map.add("http://example.org/person5", "p5");
-    // cout << map.get("http://example.org/person5") << endl;
+    cout << 11 << endl;
+    map.get("http://example.org/person1");
+    cout << 111 << endl;
+    map.get("http://example.org/person5");
+    
 
     // Node<string, string> x;
     // Node<string, string> y;
