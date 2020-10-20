@@ -79,4 +79,4 @@ This software is being developed on Linux machine (SMP Debian 4.19.132-1) in C++
 For additonal information see `Milestone_2.pdf` which is included in this repo.
 
 ## License
-This software is built under the MIT licence. See (LICENSE)[LICENSE] for more information.
+This software is built under the MIT licence. See (LICENSE)[https://github.com/jeswr/comp3600-project/edit/master/LICENSE] for more information.
