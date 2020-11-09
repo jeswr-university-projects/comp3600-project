@@ -3,9 +3,14 @@
 #include <vector>
 #include <map>
 #include "graph.h"
+#include "hash-map.cpp"
 
 using namespace std;
 
+
+struct LinkedEdgeList {
+    
+};
 
 // Should try and keep a record of the number of 
 // subjects and objects first that way we can
