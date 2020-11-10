@@ -8,13 +8,20 @@
 using namespace std;
 
 
-struct LinkedEdgeList {
-    
+// struct LinkedEdgeList {
+
+// };
+
+template<typename K>
+struct Edge {
+    K object;
+    int weight;
 };
 
 // Should try and keep a record of the number of 
 // subjects and objects first that way we can
 // initialise the array
+template<typename NodeKind>
 struct Graph {
 
     void addEdge(string subject, string object, int weight) {
@@ -27,8 +34,11 @@ struct Graph {
         // Important assumption is that we only
         // ever want to to queries starting
         // at the 's'.
-        map<string, vector<int>> graph = {};
-        graph.
+        map<NodeKind, vector<Edge<NodeKind>>> graph = {};
+        
+        
+        
+        // graph.
         // need to map subject to tuple with
         // [predicate, object][]
 

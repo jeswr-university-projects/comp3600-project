@@ -23,8 +23,8 @@ struct Node
         this->value = value;
     };
 
-    K key;
-    T value;
+    T key;
+    K value;
     struct Node<T, K> *next = NULL;
 };
 
@@ -244,10 +244,6 @@ struct Node
 //     Node<T, K> **val;
 // };
 
-
-
-
-
 template <typename T, typename K>
 struct Map
 {
@@ -271,9 +267,12 @@ struct Map
             {
                 ptr = ptr->next;
             };
-            if (ptr->key == key) {
+            if (ptr->key == key)
+            {
                 ptr->value = val;
-            } else {
+            }
+            else
+            {
                 ptr->next = new Node<T, K>(key, val);
             };
         };
@@ -281,31 +280,62 @@ struct Map
 
     void remove(T key)
     {
-        if (this->start(key)->key == key)
+        Node<T, K> *ptr = this->start(key);
+        if (ptr->key == key)
         {
-            if (this -> next != NULL) {
+            if (ptr->next != NULL)
+            {
                 this->val[hash(key) % len] = this->val[hash(key) % len]->next;
-            } else {
+            }
+            else
+            {
                 this->val[hash(key) % len] = NULL;
             }
-            
-            
         }
         else
         {
-            Node<T, K> *ptr = this->start(key);
             while (ptr->next != NULL && ptr->next->key != key)
             {
                 ptr = ptr->next;
             };
-            if (ptr->next != NULL) {
-                if (ptr->next->next != NULL) {
-                    ptr->next = ptr->next->next
-                } else {
+            if (ptr->next != NULL)
+            {
+                if (ptr->next->next != NULL)
+                {
+                    ptr->next = ptr->next->next;
+                }
+                else
+                {
                     ptr->next = NULL;
                 };
             }
         };
+    };
+
+    K get(T key)
+    {
+        Node<T, K> *ptr = this->start(key);
+        while (ptr != NULL)
+        {
+            if (ptr->key == key)
+            {
+                return ptr->value;
+            };
+        };
+        throw "Error: Key not found";
+    };
+
+    bool hasKey(T key)
+    {
+        Node<T, K> *ptr = this->start(key);
+        while (ptr != NULL)
+        {
+            if (ptr->key == key)
+            {
+                return true;
+            };
+        };
+        return false;
     };
 
 private:
@@ -327,25 +357,46 @@ private:
         return key;
     };
 
-    Node<T, K> *start(K key)
+    Node<T, K> *start(T key)
     {
         return this->val[hash(key) % len];
     };
 };
 
-
-
-
-
 int main()
 {
-    Map<string, string> map(10);
+    // cout << "before alloc" << endl;
+    Map<string, int> map(10);
     // cout << "built" << endl;
     // // map.get("http://example.org/person5");
-    map.add("http://example.org/person1", "p1");
-    map.add("http://example.org/person2", "p1");
-    map.add("http://example.org/person3", "p1");
+    // cout << "after alloc" << endl;
+
+    map.add("http://example.org/person1", 0);
+    map.add("http://example.org/person2", 3);
+    map.add("http://example.org/person3", 2);
     map.remove("http://example.org/person1");
+
+    bool has = map.hasKey("http://example.org/person3");
+
+    cout << has << endl;
+
+    // string V = map.get("http://example.org/person1");
+    // if (V)
+    // {
+    //     return "HI";
+    // }
+    // else
+    // {
+    //     return "HO";
+    // };
+    // if (map.get("http://example.org/person1") != 0)
+    // {
+    //     cout << "exists" << endl;
+    // };
+    // {
+    //     cout << "is null value" << endl;
+    // };
+
     // cout << "build2" << endl;
     // cout << 11 << endl;
     // map.get("http://example.org/person1");
@@ -415,10 +466,6 @@ int main()
 //         int len;
 //         array<int, len> val;
 // };
-
-
-
-
 
 // #include <iostream>
 // #include <array>
@@ -588,8 +635,7 @@ int main()
 //     void add(T key, K value)
 //     {
 //         Node<T, K> *ptr = this->start(key);
-        
-        
+
 //         // Node<T, K> *ptr = (this->start)(key);
 //         // cout << ptr << endl;
 //         // cout << (ptr == NULL) << endl;
@@ -641,7 +687,7 @@ int main()
 
 //     Node<T, K> *start(T key)
 //     {
-//         cout << "hash" << hash(key) % (this->len) << " "; 
+//         cout << "hash" << hash(key) % (this->len) << " ";
 //         return this->val[hash(key) % (this->len)];
 //     };
 
