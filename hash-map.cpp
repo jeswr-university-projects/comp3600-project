@@ -338,6 +338,11 @@ struct Map
         return false;
     };
 
+    int size()
+    {
+        return len;
+    };
+
 private:
     int len;
     vector<Node<T, K> *> val;
@@ -363,68 +368,68 @@ private:
     };
 };
 
-int main()
-{
-    // cout << "before alloc" << endl;
-    Map<string, int> map(10);
-    // cout << "built" << endl;
-    // // map.get("http://example.org/person5");
-    // cout << "after alloc" << endl;
+// int main()
+// {
+//     // cout << "before alloc" << endl;
+//     Map<string, int> map(10);
+//     // cout << "built" << endl;
+//     // // map.get("http://example.org/person5");
+//     // cout << "after alloc" << endl;
 
-    map.add("http://example.org/person1", 0);
-    map.add("http://example.org/person2", 3);
-    map.add("http://example.org/person3", 2);
-    map.remove("http://example.org/person1");
+//     map.add("http://example.org/person1", 0);
+//     map.add("http://example.org/person2", 3);
+//     map.add("http://example.org/person3", 2);
+//     map.remove("http://example.org/person1");
 
-    bool has = map.hasKey("http://example.org/person3");
+//     bool has = map.hasKey("http://example.org/person3");
 
-    cout << has << endl;
+//     cout << has << endl;
 
-    // string V = map.get("http://example.org/person1");
-    // if (V)
-    // {
-    //     return "HI";
-    // }
-    // else
-    // {
-    //     return "HO";
-    // };
-    // if (map.get("http://example.org/person1") != 0)
-    // {
-    //     cout << "exists" << endl;
-    // };
-    // {
-    //     cout << "is null value" << endl;
-    // };
+//     // string V = map.get("http://example.org/person1");
+//     // if (V)
+//     // {
+//     //     return "HI";
+//     // }
+//     // else
+//     // {
+//     //     return "HO";
+//     // };
+//     // if (map.get("http://example.org/person1") != 0)
+//     // {
+//     //     cout << "exists" << endl;
+//     // };
+//     // {
+//     //     cout << "is null value" << endl;
+//     // };
 
-    // cout << "build2" << endl;
-    // cout << 11 << endl;
-    // map.get("http://example.org/person1");
-    // cout << 111 << endl;
-    // map.get("http://example.org/person5");
+//     // cout << "build2" << endl;
+//     // cout << 11 << endl;
+//     // map.get("http://example.org/person1");
+//     // cout << 111 << endl;
+//     // map.get("http://example.org/person5");
 
-    // Node<string, string> x;
-    // Node<string, string> y;
-    // x.key = "K1";
-    // x.value = "V1";
-    // x.next = &y;
-    // y.key = "K2";
-    // y.value = "V2";
+//     // Node<string, string> x;
+//     // Node<string, string> y;
+//     // x.key = "K1";
+//     // x.value = "V1";
+//     // x.next = &y;
+//     // y.key = "K2";
+//     // y.value = "V2";
 
-    // cout << x.key << endl;
-    // cout << x.value << endl;
-    // cout << x.next->key << endl;
-    // cout << x.next->value << endl;
+//     // cout << x.key << endl;
+//     // cout << x.value << endl;
+//     // cout << x.next->key << endl;
+//     // cout << x.next->value << endl;
 
-    // Test<bool> x;
-    // x.s = false;
-    // return 0;
+//     // Test<bool> x;
+//     // x.s = false;
+//     // return 0;
 
-    // HashMap<string, string> map(10);
-    // map.add("Hello", "booo");
-    // cout << map.get("Hello") << endl;
-    return 0;
-};
+//     // HashMap<string, string> map(10);
+//     // map.add("Hello", "booo");
+//     // cout << map.get("Hello") << endl;
+//     return 0;
+// };
 
 // class HashMap {
 

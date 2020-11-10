@@ -38,12 +38,13 @@ struct _weightedNode {
 /**
  * The abstract data strucuture with which we 
  */
+template <typename NodeKind = string>
 struct Graph {
     int nodeCount();
     int edgeCount();
-    void addEdge(string subject, string object, int weight);
-    vector<_weightedEdge<string>> weightedEdges(string subject);
-    _weightedEdge<string> lightestEdge(string suject);
+    void addEdge(NodeKind subject, NodeKind object, int weight);
+    vector<_weightedEdge<NodeKind>> weightedEdges(NodeKind subject);
+    _weightedEdge<NodeKind> lightestEdge(NodeKind subject);
 };
 
 // Algorithms such as djikstras are more efficient
