@@ -1,3 +1,6 @@
+#ifndef __GUARDED_GRAPH
+#define __GUARDED_GRAPH
+
 #include <iostream>
 
 using namespace std;
@@ -62,3 +65,5 @@ struct GraphWithIdInternals {
     _weightedEdge<Id> lightestEdge(Id suject);
     void addEdge(string subject, string object, int weight);
 };
+
+#endif

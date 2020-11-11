@@ -1,3 +1,6 @@
+#ifndef __GUARDED_GRAPH_LIST
+#define __GUARDED_GRAPH_LIST
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -154,3 +157,4 @@ struct Edge
 
 //     return 0;
 // };
+#endif // __GUARDED_HPP

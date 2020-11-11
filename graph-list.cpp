@@ -19,26 +19,26 @@ using namespace std;
 //     int weight;
 // };
 
-int main()
-{
-    Edge<string> e;
-    e.object = "hi";
-    e.weight = 1;
-    e.object = "hop";
-    cout << e.object << " " << e.weight << endl;
-    return 0;
-};
+// int main()
+// {
+//     Edge<string> e;
+//     e.object = "hi";
+//     e.weight = 1;
+//     e.object = "hop";
+//     cout << e.object << " " << e.weight << endl;
+//     return 0;
+// };
 
 // Should try and keep a record of the number of
 // subjects and objects first that way we can
 // initialise the array
-template <typename _NodeKind>
+template <typename NodeKind>
 struct Graph
 {
     // Technically should handle case of tring to add a different
     // weight to the same object but I don't think that is necessary
     // here
-    void addEdge(_NodeKind subject, _NodeKind object, int weight)
+    void addEdge(NodeKind subject, NodeKind object, int weight)
     {
 
         int s = this->nameToId(subject);

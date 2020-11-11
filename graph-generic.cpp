@@ -1,3 +1,22 @@
+#include "graph-list.cpp" rename("Graph", "GraphList");
+#include "graph-matrix.cpp" rename("Graph", "GraphMatrix");
+
+
+template<typename NodeKind>
+struct Graph {
+    Graph(bool sparse = true) {
+        this = sparse ? GraphList<NodeKind>() : GraphMatrix<NodeKind>();
+    };
+};
+
+int main()
+{
+    cout << "compilation test worked" << endl;  
+};
+
+
+
+
 // #include <iostream>
 
 // using namespace std;

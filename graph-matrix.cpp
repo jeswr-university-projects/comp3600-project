@@ -9,20 +9,21 @@ using namespace std;
 template <typename T = int>
 struct Matrix {
 
-    Matrix(int _rows = 0, int _cols = 0, T dflt = 0) 
+    Matrix(int _rows = 0, int _cols = 0, T _dflt = 0) 
     {
         rows = _rows;
         cols = _cols;
+        dflt = _dflt;
         vector <T> dfltCol(rows, dflt);
         vector<vector<T>> matrix(cols, dfltCol);
     };
 
     void addColumn() {
-        matrix.push_back(defaulCol)
+        matrix.push_back(dfltCol);
     };
 
     void addRow() {
-        for (let i = 0, i < columns; i++) {
+        for (int i = 0; i < cols; i++) {
             matrix[i].push_back(dflt);
         };
     };
@@ -36,32 +37,32 @@ struct Matrix {
     };
 
     int getColumns() {
-        return columns;
+        return cols;
     };
 
     vector<int> getRow(int no)
     {
         vector<int> row = {};
         for (int i = 0; i < cols; i++) {
-            row.push_back(matrix[i][no])
-        }
-        return row
+            row.push_back(matrix[i][no]);
+        };
+        return row;
     }
 
     vector<int> getCol(int no)
     {
-        return matrix[no]
+        return matrix[no];
     }
 
     int getEntry(int row, int col) 
     {
-        return matrix[row][col]
-    }
+        return matrix[row][col];
+    };
 
-    private:
-        int rows, cols;
-        vector <T> dfltCol(rows);
-        vector<vector<T>> matrix;
+private:
+    int rows, cols, dflt;
+    vector <T> dfltCol;
+    vector<vector<T>> matrix;
 };
 
 template <typename T = int>
@@ -91,7 +92,7 @@ struct SquareMatrix {
     int getEntry(int row, int col)
     {
         return _matrix.getEntry(row, col);
-    }
+    };
 
     vector<int> getCol(int no)
     {
@@ -100,7 +101,7 @@ struct SquareMatrix {
 
     vector<int> getRow(int no) {
         return _matrix.getRow(no);
-    }
+    };
 
     private:
         Matrix<T> _matrix;
@@ -116,40 +117,40 @@ struct SquareMatrix {
 /**
  * Used to capture an edge with a weight 
  */
-struct weightedEdge {
-    string subject;
-    string object;
-    int weight;
-};
+// struct weightedEdge {
+//     string subject;
+//     string object;
+//     int weight;
+// };
 
 /** 
  * Used (when we already have the subject nodes)
  * to capture an object node and the associated
  * weight
  */
-struct weightedNode {
-    string object;
-    int weight;
-};
+// struct weightedNode {
+//     int object;
+//     int weight;
+// };
 
 // Should try and keep a record of the number of 
 // subjects and objects first that way we can
 // initialise the array
+template<typename NodeKind>
 struct Graph {
 
-    void addEdge(string subject, string object, int weight) 
+    void addEdge(NodeKind subject, NodeKind object, int weight) 
     {
         int s = nameToId(subject);
         int o = nameToId(object);
-        edges += 1;
+        edges++;
         matrix.addEntry(s, o, weight);
     };
 
-    vector<weightedNode> getEdges(string subject) 
+    vector<weightedNode> getEdges(NodeKind subject) 
     {
         int id = nameToId(subject);
         vector<int> col = matrix.getCol(id);
-
     };
 
     int nodeCount() 
@@ -189,7 +190,7 @@ struct Graph {
                 if (name == named[i]) {
                     return i;
                 };
-            }
+            };
             // Name does not yet exist on matrix
             named.push_back(name);
             matrix.addDim();
@@ -202,5 +203,4 @@ struct Graph {
         };
 
         int edges = 0;
-
 };

@@ -1,3 +1,6 @@
+#ifndef __GUARDED_RDF_TYPES
+#define __GUARDED_RDF_TYPES
+
 #include <vector>
 #include <iostream>
 #include <map>
@@ -59,3 +62,4 @@ typedef map<string, string> Prefixes;
 //     {"room", "http://example.org/room#"},
 //     {"person", "http://example.org/person#"},
 //     {"ach", "http://architecture#"}};
+#endif

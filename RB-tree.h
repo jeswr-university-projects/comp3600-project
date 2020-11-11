@@ -1,3 +1,6 @@
+#ifndef __GUARDED_RB_TREE
+#define __GUARDED_RB_TREE
+
 #include <vector>
 
 template<typename Value = int>
@@ -21,3 +24,5 @@ struct RBtree {
         void recolour();
         vector<Node<Value>> nodes;      
 };
+
+#endif
