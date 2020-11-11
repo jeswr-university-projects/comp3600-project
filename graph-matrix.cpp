@@ -132,10 +132,6 @@ struct weightedNode {
     int weight;
 };
 
-
-
-
-
 // Should try and keep a record of the number of 
 // subjects and objects first that way we can
 // initialise the array
