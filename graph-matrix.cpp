@@ -1,49 +1,57 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <map>
+// #include <map>
 #include "graph.h"
 
 using namespace std;
 
 template <typename T = int>
-struct Matrix {
+struct Matrix
+{
 
-    Matrix(int _rows = 0, int _cols = 0, T _dflt = 0) 
+    Matrix(int _rows = 0, int _cols = 0, T _dflt = 0)
     {
         rows = _rows;
         cols = _cols;
         dflt = _dflt;
-        vector <T> dfltCol(rows, dflt);
+        vector<T> dfltCol(rows, dflt);
         vector<vector<T>> matrix(cols, dfltCol);
     };
 
-    void addColumn() {
+    void addColumn()
+    {
         matrix.push_back(dfltCol);
     };
 
-    void addRow() {
-        for (int i = 0; i < cols; i++) {
+    void addRow()
+    {
+        for (int i = 0; i < cols; i++)
+        {
             matrix[i].push_back(dflt);
         };
     };
 
-    void addEntry(int row, int col, int val) {
+    void addEntry(int row, int col, int val)
+    {
         matrix[row][col] = val;
     };
 
-    int getRows() {
+    int getRows()
+    {
         return rows;
     };
 
-    int getColumns() {
+    int getColumns()
+    {
         return cols;
     };
 
     vector<int> getRow(int no)
     {
         vector<int> row = {};
-        for (int i = 0; i < cols; i++) {
+        for (int i = 0; i < cols; i++)
+        {
             row.push_back(matrix[i][no]);
         };
         return row;
@@ -54,32 +62,33 @@ struct Matrix {
         return matrix[no];
     }
 
-    int getEntry(int row, int col) 
+    int getEntry(int row, int col)
     {
         return matrix[row][col];
     };
 
 private:
     int rows, cols, dflt;
-    vector <T> dfltCol;
+    vector<T> dfltCol;
     vector<vector<T>> matrix;
 };
 
 template <typename T = int>
-struct SquareMatrix {
+struct SquareMatrix
+{
 
-    SquareMatrix(int size = 0, T dflt = 0) 
+    SquareMatrix(int size = 0, T dflt = 0)
     {
         _matrix = Matrix<T>(size, size, dflt);
     };
 
-    void addDim() 
+    void addDim()
     {
         _matrix.addRow();
         _matrix.addColumn();
     }
 
-    int size() 
+    int size()
     {
         return _matrix.getRows();
     };
@@ -99,12 +108,13 @@ struct SquareMatrix {
         return _matrix.getCol(no);
     };
 
-    vector<int> getRow(int no) {
+    vector<int> getRow(int no)
+    {
         return _matrix.getRow(no);
     };
 
-    private:
-        Matrix<T> _matrix;
+private:
+    Matrix<T> _matrix;
 };
 
 // Note that for weightedEdge and weightedNode we have to
@@ -133,74 +143,126 @@ struct SquareMatrix {
 //     int weight;
 // };
 
-// Should try and keep a record of the number of 
+// Should try and keep a record of the number of
 // subjects and objects first that way we can
 // initialise the array
-template<typename NodeKind>
-struct Graph {
+template <typename T>
+class GraphMatrix : public Graph<T>
+{
+    void Graph(){};
 
-    void addEdge(NodeKind subject, NodeKind object, int weight) 
+    void addEdge(T subject, T object, int weight)
     {
         int s = nameToId(subject);
         int o = nameToId(object);
-        edges++;
-        matrix.addEntry(s, o, weight);
+        this->edges++;
+        this->matrix.addEntry(s, o, weight);
     };
 
-    vector<weightedNode> getEdges(NodeKind subject) 
-    {
-        int id = nameToId(subject);
-        vector<int> col = matrix.getCol(id);
-    };
-
-    int nodeCount() 
-    {
+    int nodeCount() {
         return matrix.size();
     };
 
-    int edgeCount()
-    {
+    int edgeCount() {
         return edges;
     };
 
-    // void _djikstra(int start) 
-    // {
-    //     array<bool> visited[]
+    vector<_weightedEdge<T>> weightedEdges() {
         
-    //     vector<int> visited = {};
+    };
 
-    // }
-
-    // void djikstra(string start)
-    // {
-    //     return _djikstra(nameToId(start))
-    // }
-
-    private:
-        // Converts beteen name of entry
-        // and row/col of matrix
-        vector<string> named = {};
-
-        SquareMatrix<int> matrix;
-
-        int nameToId(string name) {
-            int i = 0;
-            // TODO: CHECK/FIX
-            while (i++ < named.size()) {
-                if (name == named[i]) {
-                    return i;
-                };
-            };
-            // Name does not yet exist on matrix
-            named.push_back(name);
-            matrix.addDim();
-            return i;
-        };
-
-        // Implemented like this so it is easier to update
-        string idToName(int id) {
-            return named[id];
-        };
-
-        int edges = 0;
+private:
+    SquareMatrix<int> matrix = SquareMatrix<int>();
+    int edges = 0;
 };
+
+// template<typename T>
+// Graph<T>::Graph()
+// {
+//     //SquareMatrix<int>
+//     this->storage = SquareMatrix<int>();
+// };
+
+// template<typename T>
+// void Graph<T>::addEdge(T subject, T object, int weight)
+// {
+//     int s = nameToId(subject);
+//     int o = nameToId(object);
+//     this->edges++;
+//     this->matrix.addEntry(s, o, weight);
+// };
+
+// template<typename NodeKind>
+// struct Graph {
+
+// int nodeCount();
+// int edgeCount();
+// void addEdge(NodeKind subject, NodeKind object, int weight);
+// vector<_weightedEdge<NodeKind>> weightedEdges(NodeKind subject);
+// _weightedEdge<NodeKind> lightestEdge(NodeKind subject);
+
+// void addEdge(NodeKind subject, NodeKind object, int weight)
+// {
+//     int s = nameToId(subject);
+//     int o = nameToId(object);
+//     edges++;
+//     matrix.addEntry(s, o, weight);
+// };
+
+// vector<weightedNode> getEdges(NodeKind subject)
+// {
+//     int id = nameToId(subject);
+//     vector<int> col = matrix.getCol(id);
+// };
+
+// int nodeCount()
+// {
+//     return matrix.size();
+// };
+
+// int edgeCount()
+// {
+//     return edges;
+// };
+
+// // void _djikstra(int start)
+// // {
+// //     array<bool> visited[]
+
+// //     vector<int> visited = {};
+
+// // }
+
+// // void djikstra(string start)
+// // {
+// //     return _djikstra(nameToId(start))
+// // }
+
+// private:
+//     // Converts beteen name of entry
+//     // and row/col of matrix
+//     vector<string> named = {};
+
+//     SquareMatrix<int> matrix;
+
+//     int nameToId(string name) {
+//         int i = 0;
+//         // TODO: CHECK/FIX
+//         while (i++ < named.size()) {
+//             if (name == named[i]) {
+//                 return i;
+//             };
+//         };
+//         // Name does not yet exist on matrix
+//         named.push_back(name);
+//         matrix.addDim();
+//         return i;
+//     };
+
+//     // Implemented like this so it is easier to update
+//     string idToName(int id) {
+//         return named[id];
+//     };
+
+//     int edges = 0;
+// };
