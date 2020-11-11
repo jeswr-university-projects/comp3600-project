@@ -2,28 +2,39 @@
 #include <fstream>
 #include <vector>
 // #include <map>
+#include <limits>
 #include "graph.h"
+#include "hash-map.cpp"
 
 using namespace std;
+
+int Infinity = numeric_limits<int>::max();
 
 template <typename T = int>
 struct Matrix
 {
-
+    // If the number of rows/columns are known in advance
+    // we hence can pre-allocate O(rows + cols)
     Matrix(int _rows = 0, int _cols = 0, T _dflt = 0)
     {
-        rows = _rows;
-        cols = _cols;
-        dflt = _dflt;
-        vector<T> dfltCol(rows, dflt);
-        vector<vector<T>> matrix(cols, dfltCol);
+        rows = _rows; // O(1)
+        cols = _cols; // O(1)
+        dflt = _dflt; // O(1)
+        vector<T> dfltCol(rows, dflt); // O(rows)
+        vector<vector<T>> matrix(cols, dfltCol); // O(cols)
     };
 
+    // O(1) time complexity (though this will be amatorized)
+    // if the number of rows/cols are left at 0 to start off
+    // with
     void addColumn()
     {
         matrix.push_back(dfltCol);
     };
 
+    // O(n) time complexity (though this will be amatorized)
+    // if the number of rows/cols are left at 0 to start off
+    // with
     void addRow()
     {
         for (int i = 0; i < cols; i++)
@@ -32,24 +43,29 @@ struct Matrix
         };
     };
 
+    // O(1)
     void addEntry(int row, int col, int val)
     {
         matrix[row][col] = val;
     };
 
+    // O(1)
     int getRows()
     {
         return rows;
     };
 
+    // O(1)
     int getColumns()
     {
         return cols;
     };
 
+    // O(cols)
     vector<int> getRow(int no)
     {
-        vector<int> row = {};
+        vector<int> row;
+        row.reserve(cols);
         for (int i = 0; i < cols; i++)
         {
             row.push_back(matrix[i][no]);
@@ -57,11 +73,13 @@ struct Matrix
         return row;
     }
 
+    // O(1)
     vector<int> getCol(int no)
     {
         return matrix[no];
-    }
+    };
 
+    // O(1)
     int getEntry(int row, int col)
     {
         return matrix[row][col];
@@ -73,41 +91,49 @@ private:
     vector<vector<T>> matrix;
 };
 
+
 template <typename T = int>
 struct SquareMatrix
 {
 
+    // O(size^2 + 1)
     SquareMatrix(int size = 0, T dflt = 0)
     {
         _matrix = Matrix<T>(size, size, dflt);
     };
 
+    // O(n)
     void addDim()
     {
         _matrix.addRow();
         _matrix.addColumn();
     }
 
+    // O(1)
     int size()
     {
         return _matrix.getRows();
     };
 
+    // O(1)
     void addEntry(int row, int col, T val)
     {
         _matrix.addEntry(row, col, val);
     };
 
+    // O(1)
     int getEntry(int row, int col)
     {
         return _matrix.getEntry(row, col);
     };
 
+    // O(1)
     vector<int> getCol(int no)
     {
         return _matrix.getCol(no);
     };
 
+    // O(no)
     vector<int> getRow(int no)
     {
         return _matrix.getRow(no);
@@ -149,7 +175,10 @@ private:
 template <typename T>
 class GraphMatrix : public Graph<T>
 {
-    void Graph(){};
+    // O(nodes^2 + 1)
+    void GraphMatrix(int nodes = 0) {
+        this->matrix = SquareMatrix<int>(nodes);
+    };
 
     void addEdge(T subject, T object, int weight)
     {
@@ -167,13 +196,59 @@ class GraphMatrix : public Graph<T>
         return edges;
     };
 
-    vector<_weightedEdge<T>> weightedEdges() {
-        
+    vector<_weightedEdge<T>> weightedEdges(T subject) {
+        vector<_weightedEdge<T>> output;
+        int edges[] = matrix.getCol(names.get(subject));
+        for (int i = 0; i < matrix.size(); i++)
+        {
+            if (edges[i] != 0)
+            {
+                output.push_back({
+                    subject : subject,
+                    object : names.getKey(i),
+                    weight : edges[i]
+                });
+            };
+        };
+        return output;
+    };
+
+    _weightedEdge<T> lightestEdge(T subject) {
+        _weightedEdge<T> output;
+        int edges[] = matrix.getCol(names.get(subject));
+        for (int i = 0; i < matrix.size(); i++)
+        {
+            if (edges[i] != 0)
+            {
+                output.push_back({
+                    subject : subject,
+                    object : names.getKey(i),
+                    weight : edges[i]
+                });
+            };
+        };
+        return output;
     };
 
 private:
-    SquareMatrix<int> matrix = SquareMatrix<int>();
+    SquareMatrix<int> matrix;
+    ReverseLookupMap<T, int> names;
     int edges = 0;
+    int nameToId(T key)
+    {
+        int id;
+        
+        if (!names.hasKey(key))
+        {
+            id = names.size()
+            names.add(key, id);
+        }
+        else
+        {
+            id = names.get(key);
+        };
+        return id;
+    };
 };
 
 // template<typename T>

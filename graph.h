@@ -53,8 +53,8 @@ public:
     virtual int nodeCount();
     virtual int edgeCount();
     virtual void addEdge(NodeKind subject, NodeKind object, int weight);
-    virtual vector<_weightedEdge<NodeKind>> weightedEdges(NodeKind subject);
-    virtual _weightedEdge<NodeKind> lightestEdge(NodeKind subject);
+    virtual vector<weightedEdge<NodeKind>> weightedEdges(NodeKind subject);
+    virtual weightedEdge<NodeKind> lightestEdge(NodeKind subject);
 };
 
 // Algorithms such as djikstras are more efficient
