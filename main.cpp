@@ -6,6 +6,7 @@
 #include <boost/program_options.hpp>
 // #include "rdf-types.h"
 #include "rdf-io/reader.cpp"
+#include "buildingTriples2graph.cpp"
 using namespace std;
 using namespace boost;
 using namespace boost::program_options;
@@ -58,27 +59,31 @@ int main(int argc, char *argv[])
     if (vm.count("calculate-paths"))
     {
         building = ingestCliTriples("building-file", vm);
-        person = ingestCliTriples("person-file", vm);
+        // person = ingestCliTriples("person-file", vm);
+
+        GraphMatrix<string> graph = buildingsTriplesToGraph(building);
+
+        cout << "ingesting data ..." << endl;
         if (!vm.count("escape-file")) {
             throw error("Please specify the escape-file in order to run this command");
         };
         //escape = ingestCliTriples("escape-file", vm);
     };
 
-    if (vm.count("calculate-risk"))
-    {
-        building = ingestCliTriples("building-file", vm);
-        person = ingestCliTriples("person-file", vm);
-        escape = ingestCliTriples("escape-file", vm);
-        risk = ingestCliTriples("risk-file", vm);
-    };
+    // if (vm.count("calculate-risk"))
+    // {
+    //     building = ingestCliTriples("building-file", vm);
+    //     person = ingestCliTriples("person-file", vm);
+    //     escape = ingestCliTriples("escape-file", vm);
+    //     risk = ingestCliTriples("risk-file", vm);
+    // };
 
-    if (vm.count("run-diagnostics"))
-    {
-        if (!vm.count("diagnostics-file")) {
-            throw error("Please specify location to output diagnostics file");
-        }
-    };
+    // if (vm.count("run-diagnostics"))
+    // {
+    //     if (!vm.count("diagnostics-file")) {
+    //         throw error("Please specify location to output diagnostics file");
+    //     }
+    // };
 
 
 

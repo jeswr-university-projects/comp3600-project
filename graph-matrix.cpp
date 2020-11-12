@@ -198,8 +198,8 @@ private:
 // Should try and keep a record of the number of
 // subjects and objects first that way we can
 // initialise the array
-template <class T = string>
-class GraphMatrix //: public Graph<T>
+template <typename T>
+class GraphMatrix
 {
 public:
     // O(nodes^2 + 1)
@@ -207,7 +207,7 @@ public:
     {
         this->matrix = SquareMatrix<int>(nodes);
     };
-    
+
     void addEdge(T subject, T object, int weight)
     {
         int s = nameToId(subject);

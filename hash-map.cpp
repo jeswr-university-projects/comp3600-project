@@ -187,10 +187,10 @@ struct Map
     };
 
 private:
-    int len;
+    int len = 1;
     int _size = 0;
     // Node<T, K>* node;
-    vector<Node<T, K> *> val;
+    vector<Node<T, K> *> val = NULL;
 
     // Generic string hash, but noting that
     // credit (https://computinglife.wordpress.com/2008/11/20/why-do-hash-functions-use-prime-numbers/)
@@ -272,8 +272,8 @@ struct ReverseLookupMap
     };
 
 private:
-    Map<T, K> forward;
-    Map<K, T> backward;
+    Map<T, K> forward = Map<T, K>();
+    Map<K, T> backward = Map<K, T>();
 };
 
 // int main()
