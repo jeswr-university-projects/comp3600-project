@@ -87,30 +87,59 @@ struct RBtree
 
     vector<T> flattened()
     {
-        RBNode<T>* n = root;
-        vector<T> out;
-        T last = NegInfinity;
-
-        while (n->left != NULL)
+        // RBNode<T>* n = root;
+        vector<T> flattening(RBNode<T> * n)
         {
-            n = n->left;
-        };
+            // https://stackoverflow.com/questions/3177241/what-is-the-best-way-to-concatenate-two-vectors
 
-        while (n != NULL)
-        {
-            if (n->right == NULL || n->right->val > last)
+            if (n == NULL)
             {
-                last = n->right->val;
-                out.push_back(last);
+                vector<T> x;
+                return x;
+            }
+            else
+            {
+                vector<T> L = flattening(root->left);
+                vector<T> R = flattening(root->left);
+                L.push_back(n->val);
+
+                vector<T> out;
+                out.insert(out.end(), L.begin(), L.end());
+                out.insert(out.end(), R.begin(), R.end());
+
+                return out;
             };
         };
+        // return flattening(root);
 
-        
-        // I guess we should find a better way of handling this?
-        T last = NegInfinity;
-        // for (int i = 0; i < )
+        // T val;
+        // // vector<T> out;
+        // // T last = NegInfinity;
+
+        // while (n->right != NULL)
+        // {
+        //     n = n->right;
+        // };
+
+        // val = n->val;
+
+        // Delete(n);
+
+        return flattened().push_back(val);
+
+        // while (n != NULL)
+        // {
+        //     if (n->right == NULL || n->right->val > last)
+        //     {
+        //         last = n->right->val;
+        //         out.push_back(last);
+        //     };
+        // };
+
+        // // I guess we should find a better way of handling this?
+        // T last = NegInfinity;
+        // // for (int i = 0; i < )
     };
-
 
 private:
     void recolour();
@@ -132,16 +161,16 @@ private:
                 };
 
                 if (w->left->colour == Black && w->right->colour == Black)
-                {   
+                {
                     w->colour = Red;
                     node = node->parent;
                 }
                 else if (w->right->colour == Black)
                 {
-                  w->left->colour = Black;
-                  w->colour = Red;
-                  RotateRight(w);
-                  w = node->parent->right;  
+                    w->left->colour = Black;
+                    w->colour = Red;
+                    RotateRight(w);
+                    w = node->parent->right;
                 }
                 else // Double check whether this section should be else or stand alone
                 {
@@ -164,16 +193,16 @@ private:
                 };
 
                 if (w->right->colour == Black && w->left->colour == Black)
-                {   
+                {
                     w->colour = Red;
                     node = node->parent;
                 }
                 else if (w->left->colour == Black)
                 {
-                  w->right->colour = Black;
-                  w->colour = Red;
-                  RotateRight(w);
-                  w = node->parent->left;  
+                    w->right->colour = Black;
+                    w->colour = Red;
+                    RotateRight(w);
+                    w = node->parent->left;
                 }
                 else // Double check whether this section should be else or stand alone
                 {
@@ -183,9 +212,9 @@ private:
                     RotateLeft(node);
                     node = root;
                 };
-            }; 
+            };
         }
-        node->colour = Black;          
+        node->colour = Black;
     };
 
     void postInsertRecolour(RBNode<Value> *node)

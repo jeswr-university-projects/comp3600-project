@@ -17,12 +17,12 @@ Triples ingestCliTriples(string file, variables_map vm)
         try
         {
             Triples triples = getTriples(vm[file].as<string>());
-            cout << "ingested triples ..." << endl;
-            for (Triple t : triples)
-            {
-                cout << t[0] << ' ' << t[1] << ' ' << t[2] << endl;
-            };
-            cout << endl;
+            // cout << "ingested triples ..." << endl;
+            // for (Triple t : triples)
+            // {
+            //     cout << t[0] << ' ' << t[1] << ' ' << t[2] << endl;
+            // };
+            // cout << endl;
             return triples;
         }
         catch (int e)

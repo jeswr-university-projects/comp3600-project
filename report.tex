@@ -265,6 +265,12 @@ void add(T key, K val)
 
 \subsubsection{size}
 
+% "Global" time complexities to analyse
+% 1. triple reading - triple writing - creating graph - full functionality 1 time complexity: Supported by analysis of hash map and 2 alternative graph structures
+% 2. Djikstrish algorithm time complexity - in addition to some theoretical and emperical analysis for the read/query operation of the realised graph.
+% 3. RBTree analysis including creation etc. - do I need to get some dynamic programming in here???
+
+
 Size simply returns the privately stored integer \texttt{len} and thus has time complexity $O(1)$
 
 
