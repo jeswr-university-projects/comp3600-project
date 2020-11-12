@@ -17,10 +17,10 @@ struct Matrix
     // we hence can pre-allocate O(rows + cols)
     Matrix(int _rows = 0, int _cols = 0, T _dflt = 0)
     {
-        rows = _rows; // O(1)
-        cols = _cols; // O(1)
-        dflt = _dflt; // O(1)
-        vector<T> dfltCol(rows, dflt); // O(rows)
+        rows = _rows;                            // O(1)
+        cols = _cols;                            // O(1)
+        dflt = _dflt;                            // O(1)
+        vector<T> dfltCol(rows, dflt);           // O(rows)
         vector<vector<T>> matrix(cols, dfltCol); // O(cols)
     };
 
@@ -30,6 +30,7 @@ struct Matrix
     void addColumn()
     {
         matrix.push_back(dfltCol);
+        cols++;
     };
 
     // O(n) time complexity (though this will be amatorized)
@@ -41,6 +42,8 @@ struct Matrix
         {
             matrix[i].push_back(dflt);
         };
+        dfltCol.push_back(dflt);
+        rows++;
     };
 
     // O(1)
@@ -85,12 +88,23 @@ struct Matrix
         return matrix[row][col];
     };
 
+    void print()
+    {
+        for (vector<T> c : matrix)
+        {
+            for (T e : c)
+            {
+                cout << e << " ";
+            };
+            cout << "|" << endl;
+        };
+    };
+
 private:
-    int rows, cols, dflt;
+    int rows, cols, dflt = 0;
     vector<T> dfltCol;
     vector<vector<T>> matrix;
 };
-
 
 template <typename T = int>
 struct SquareMatrix
@@ -118,6 +132,13 @@ struct SquareMatrix
     // O(1)
     void addEntry(int row, int col, T val)
     {
+        // cout << "at add entry " << endl;
+        while ((row >= size()) || (col >= size()))
+        {
+            cout << "adding dim " << this->size() << endl;
+            addDim();
+        };
+        cout << "dims added" << endl;
         _matrix.addEntry(row, col, val);
     };
 
@@ -138,6 +159,11 @@ struct SquareMatrix
     {
         return _matrix.getRow(no);
     };
+
+    void print()
+    {
+        _matrix.print();
+    }
 
 private:
     Matrix<T> _matrix;
@@ -172,14 +198,16 @@ private:
 // Should try and keep a record of the number of
 // subjects and objects first that way we can
 // initialise the array
-template <typename T>
-class GraphMatrix : public Graph<T>
+template <class T = string>
+class GraphMatrix //: public Graph<T>
 {
+public:
     // O(nodes^2 + 1)
-    void GraphMatrix(int nodes = 0) {
+    GraphMatrix(int nodes = 0)
+    {
         this->matrix = SquareMatrix<int>(nodes);
     };
-
+    
     void addEdge(T subject, T object, int weight)
     {
         int s = nameToId(subject);
@@ -188,17 +216,20 @@ class GraphMatrix : public Graph<T>
         this->matrix.addEntry(s, o, weight);
     };
 
-    int nodeCount() {
+    int nodeCount()
+    {
         return matrix.size();
     };
 
-    int edgeCount() {
+    int edgeCount()
+    {
         return edges;
     };
 
-    vector<_weightedEdge<T>> weightedEdges(T subject) {
+    vector<_weightedEdge<T>> weightedEdges(T subject)
+    {
         vector<_weightedEdge<T>> output;
-        int edges[] = matrix.getCol(names.get(subject));
+        vector<int> edges = matrix.getCol(names.get(subject));
         for (int i = 0; i < matrix.size(); i++)
         {
             if (edges[i] != 0)
@@ -213,21 +244,30 @@ class GraphMatrix : public Graph<T>
         return output;
     };
 
-    _weightedEdge<T> lightestEdge(T subject) {
+    _weightedEdge<T> lightestEdge(T subject)
+    {
         _weightedEdge<T> output;
-        int edges[] = matrix.getCol(names.get(subject));
+        output.weight = Infinity;
+        vector<int> edges = matrix.getCol(names.get(subject));
         for (int i = 0; i < matrix.size(); i++)
         {
-            if (edges[i] != 0)
+            if (0 < edges[i] && edges[i] < output.weight)
             {
-                output.push_back({
+                output = {
                     subject : subject,
                     object : names.getKey(i),
                     weight : edges[i]
-                });
+                };
             };
         };
         return output;
+    };
+
+    void print()
+    {
+        cout << "----" << endl;
+        matrix.print();
+        cout << "----" << endl;
     };
 
 private:
@@ -237,10 +277,10 @@ private:
     int nameToId(T key)
     {
         int id;
-        
+
         if (!names.hasKey(key))
         {
-            id = names.size()
+            id = names.size();
             names.add(key, id);
         }
         else
@@ -250,6 +290,38 @@ private:
         return id;
     };
 };
+
+// int main()
+// {
+//     // GraphMatrix<string> myGraph;
+//     GraphMatrix<string> myGraph;
+//     myGraph.print();
+//     myGraph.addEdge("http://example.org/subject", "http://example.org/predicate", 10);
+//     myGraph.addEdge("http://example.org/predicate", "http://example.org/predicate", 10);
+//     myGraph.print();
+//     myGraph.addEdge("http://example.org/subject1", "http://example.org/predicate2", 2);
+//     myGraph.print();
+//     myGraph.addEdge("http://example.org/subject2", "http://example.org/predicate2", 1);
+//     myGraph.print();
+//     myGraph.addEdge("http://example.org/subject2sd", "http://example.org/predicate2", 1);
+//     myGraph.addEdge("http://example.org/predicate2", "http://example.org/predicate2", 1);
+//     myGraph.print();
+//     cout << endl
+//          << myGraph.edgeCount() << endl;
+
+//     _weightedEdge<string> e = myGraph.lightestEdge("http://example.org/subject1");
+//     cout << e.weight << " " << e.subject << " " << e.object << endl;
+
+//     // Map<string, int> test;
+//     // test.add("1", 1);
+//     // test.add("2", 2);
+
+//     // cout << test.size() << endl;
+//     // cout << test.get("1") << endl;
+//     // cout << test.get("2") << endl;
+
+//     return 0;
+// };
 
 // template<typename T>
 // Graph<T>::Graph()

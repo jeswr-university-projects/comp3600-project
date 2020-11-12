@@ -5,7 +5,18 @@ using namespace std;
 /**
  * Hash map used throughout this
  * software
+ * 
+ * With regards to the time complexities
+ * in this file - we note that some of the 
+ * operations on the vector package may be
+ * amatorized. In this case we deoote the
+ * amatorized complexity (which is essentially
+ * average case as ~O(1)).
  */
+
+
+
+
 // TODO: UPDATE THE TIME COMPLEITIES TO REFLECT
 // THE ACTUAL WORST CASE TIME COMPLEXITY
 template <typename T, typename K>
@@ -28,10 +39,10 @@ struct Map
 {
 
     // O(len + 1)
-    Map(int len)
+    Map(int len = 1)
     {
-        this->len = len;
-        this->val.reserve(len);
+        this->len = len; // O(1)
+        this->val.reserve(len); // O(len)
     };
 
     void add(T key, K val)
@@ -54,6 +65,7 @@ struct Map
         if (this->start(key) == NULL)
         {
             this->val[slot(key)] = new Node<T, K>(key, val);
+            _size++;
         }
         else
         {
@@ -69,6 +81,7 @@ struct Map
             else
             {
                 ptr->next = new Node<T, K>(key, val);
+                _size++;
             };
         };
     };
@@ -78,6 +91,7 @@ struct Map
         Node<T, K> *ptr = this->start(key);
         if (ptr->key == key)
         {
+            // O(len(key)) if key is a string, else O(1).
             this->val[slot(key)] = (ptr->next != NULL) ? this->val[slot(key)]->next : NULL;
         }
         else
@@ -110,6 +124,7 @@ struct Map
             {
                 return ptr->value;
             };
+            ptr = ptr->next;
             // cout << "inside while" << endl;
         };
         throw "Error: Key not found";
@@ -125,6 +140,7 @@ struct Map
             {
                 return true;
             };
+            ptr = ptr->next;
         };
         return false;
     };
@@ -167,11 +183,12 @@ struct Map
     // O(1)
     int size()
     {
-        return len;
+        return _size;
     };
 
 private:
     int len;
+    int _size = 0;
     // Node<T, K>* node;
     vector<Node<T, K> *> val;
 
@@ -184,10 +201,11 @@ private:
     int hash(string key)
     {
         int h = 1;
-        for (int i = 6; i < key.length(); i++)
+        for (int i = 0; i < key.length(); i++)
         {
             h = h * 31 + key[i];
         };
+        // cout << "hash is" << h << endl;
         return h;
     };
 
@@ -213,6 +231,11 @@ private:
 template <typename T, typename K>
 struct ReverseLookupMap
 {
+    // ReverseLookupMap<T, K>()
+    // {
+
+    // };
+    
     void add(T key, K val)
     {
         forward.add(key, val);
@@ -224,21 +247,25 @@ struct ReverseLookupMap
         return forward.get(key);
     };
 
+    // ~O(1)
     T getKey(K val)
     {
         return backward.get(val);
     };
 
+    // ~O(1)
     bool hasKey(T key)
     {
         return forward.hasKey(key);
     };
 
+    // ~O(1)
     bool hasVal(K val)
     {
         return backward.hasKey(val);
     };
 
+    // O(1)
     int size()
     {
         return backward.size();
@@ -248,3 +275,11 @@ private:
     Map<T, K> forward;
     Map<K, T> backward;
 };
+
+// int main()
+// {
+//     ReverseLookupMap<string, string> x;
+//     x.add("x", "y");
+//     cout << x.getKey("y") << endl;
+//     return 0;
+// };

@@ -2,7 +2,10 @@
 #define __GUARDED_RB_TREE
 
 #include <vector>
+#include <limits>
 using namespace std;
+
+int NegInfinity = numeric_limits<int>::min();
 
 enum colour
 {
@@ -81,6 +84,33 @@ struct RBtree
 
     void bulkInsert(Value val[]);
     void bulkDelete(Value val[]);
+
+    vector<T> flattened()
+    {
+        RBNode<T>* n = root;
+        vector<T> out;
+        T last = NegInfinity;
+
+        while (n->left != NULL)
+        {
+            n = n->left;
+        };
+
+        while (n != NULL)
+        {
+            if (n->right == NULL || n->right->val > last)
+            {
+                last = n->right->val;
+                out.push_back(last);
+            };
+        };
+
+        
+        // I guess we should find a better way of handling this?
+        T last = NegInfinity;
+        // for (int i = 0; i < )
+    };
+
 
 private:
     void recolour();
