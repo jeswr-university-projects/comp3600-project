@@ -31,7 +31,7 @@ struct Node
 
     T key;
     K value;
-    struct Node<T, K> *next = NULL;
+    Node<T, K> *next = nullptr;
 };
 
 template <typename T, typename K>
@@ -42,13 +42,18 @@ struct Map
     Map(int len = 1)
     {
         this->len = len; // O(1)
+        // this->val..
         this->val.reserve(len); // O(len)
+        for (int i = 0; i < len; i++)
+        {
+            this->val[i] = nullptr;
+        };
     };
 
     void add(T key, K val)
     {
         // Node<T, K> *ptr = this->start(key);
-        // while (ptr != NULL)
+        // while (ptr != nullptr)
         // {
         //     if (ptr->key == key) {};
         //     {
@@ -62,15 +67,16 @@ struct Map
         // ptr = new Node<T, K>(key, val);
         // // *ptr = &(new Node<T, K>(key, val));
 
-        if (this->start(key) == NULL)
+        if (this->start(key) == nullptr)
         {
+            delete this->val[slot(key)];
             this->val[slot(key)] = new Node<T, K>(key, val);
             _size++;
         }
         else
         {
             Node<T, K> *ptr = this->start(key);
-            while (ptr->next != NULL && ptr->key != key)
+            while (ptr->next != nullptr && ptr->key != key)
             {
                 ptr = ptr->next;
             };
@@ -80,6 +86,7 @@ struct Map
             }
             else
             {
+                delete ptr->next;
                 ptr->next = new Node<T, K>(key, val);
                 _size++;
             };
@@ -92,23 +99,26 @@ struct Map
         if (ptr->key == key)
         {
             // O(len(key)) if key is a string, else O(1).
-            this->val[slot(key)] = (ptr->next != NULL) ? this->val[slot(key)]->next : NULL;
+            this->val[slot(key)] = (ptr->next != nullptr) ? this->val[slot(key)]->next : nullptr;
         }
         else
         {
-            while (ptr->next != NULL && ptr->next->key != key)
+            while (ptr->next != nullptr && ptr->next->key != key)
             {
                 ptr = ptr->next;
             };
-            if (ptr->next != NULL)
+            if (ptr->next != nullptr)
             {
-                if (ptr->next->next != NULL)
+                if (ptr->next->next != nullptr)
                 {
+                    Node<T, K> x = ptr->next;
                     ptr->next = ptr->next->next;
+                    delete x;
                 }
                 else
                 {
-                    ptr->next = NULL;
+                    delete ptr->next;
+                    ptr->next = nullptr;
                 };
             }
         };
@@ -118,7 +128,7 @@ struct Map
     K get(T key)
     {
         Node<T, K> *ptr = this->start(key);
-        while (ptr != NULL)
+        while (ptr != nullptr)
         {
             if (ptr->key == key)
             {
@@ -134,7 +144,7 @@ struct Map
     bool hasKey(T key)
     {
         Node<T, K> *ptr = this->start(key);
-        while (ptr != NULL)
+        while (ptr != nullptr)
         {
             if (ptr->key == key)
             {
@@ -151,7 +161,7 @@ struct Map
         for (int i = 0; i < len; i++)
         {
             Node<T, K> *ptr = val[i];
-            while (ptr != NULL)
+            while (ptr != nullptr)
             {
                 if (ptr->value == value)
                 {
@@ -170,7 +180,7 @@ struct Map
         for (int i = 0; i < len; i++)
         {
             Node<T, K> *ptr = val[i];
-            while (ptr != NULL)
+            while (ptr != nullptr)
             {
                 if (ptr->value == val)
                 {
@@ -190,7 +200,7 @@ private:
     int len = 1;
     int _size = 0;
     // Node<T, K>* node;
-    vector<Node<T, K> *> val = NULL;
+    vector<Node<T, K> *> val = vector<Node<T, K> *>(0, nullptr);
 
     // Generic string hash, but noting that
     // credit (https://computinglife.wordpress.com/2008/11/20/why-do-hash-functions-use-prime-numbers/)

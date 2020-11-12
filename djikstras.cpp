@@ -2,16 +2,14 @@
 #include <iostream>
 #include "graph.h"
 #include <limits>
-#include <map>
+// #include <map>
+#include "hash-map.cpp"
 using namespace std;
 
 // move23 a move .
 // move23 moveTime t .
 // move23 moveTo nodeX .
 // This is a dynamic programming problem as we can break problems into an acyclic graph over time
-
-
-
 
 // Assume that infection risk is not increased in hallway traversals
 // as they are *spread out* through the hallway and they
@@ -125,43 +123,103 @@ bool isNotEnd(Id n, vector<Id> &endIds)
     return true;
 };
 
-struct nodeInfo {
+struct nodeInfo
+{
     bool end = true;
     bool visited = false;
     int weight = 0;
 };
 
-struct Info {
+struct Info
+{
     bool end = true;
     bool visited = false;
     int weight = 0;
 };
 
 template <typename Id = int>
-map<Id, vector<Id>> multiStartMultiEnd(vector<Id> starts, vector<Id> ends, GraphWithIdInternals<Id> graph)
+Map<Id, vector<Id>> multiStartMultiEnd(vector<Id> starts, vector<Id> ends, GraphWithIdInternals<Id> graph)
 {
-    map<Id, vector<Id>> paths;
-    map<Id, Info> ending;
-    for (Id end: ends)
+    Map<Id, vector<Id>> paths;
+    Map<Id, Info> ending;
+    ending.reserve(ends.size());
+
+    for (Id end : ends)
     {
-        ending[end] = {
-            end: true;
-            weight: 0;
-        };
+        ending.add(end, {
+            end : true,
+            weight : 0
+        });
     };
-    for (Id start: starts) 
+
+    for (Id start : starts)
     {
-        // TODO:
+        // Possibly use hash maps here instead when generalising
+        vector<bool> visited(graph.nodeCount(), false);
+        vector<int> distance(graph.nodeCount(), Infinity);
+
+        int current = startId;
+        int currentDistance = 0;
+
+        distance[current] = currentDistance;
+
+        // TODO: FIX THE SECOND CONDITION IN THIS LOOP
+        while (!visited[endId] && currentDistance != Infinity)
+        {
+            // vector<weightedEdge> edges = graph.weightedEdges(current);
+
+            int minTentative = Infinity;
+            Id nextId;
+
+            for (weightedEdge edge : graph.weightedEdges(current))
+            {
+                // Check to make sure the node has not yet been visited
+                if (!visited[edges[i].object])
+                {
+                    int tentativeDistance = edges[i].weight + currentDistance;
+
+                    if (tentativeDistance < minTentative)
+                    {
+                        minTentative = tentativeDistance;
+                        nextId = i;
+                    };
+                    // Take the minimium of the current distance and the tentative distance
+                    distance[i] = min(distance[i], edges[i].weight + currentDistance);
+                };
+            };
+            visited[current] = true;
+            currentDistance = minTentative;
+            current = i;
+        };
+
+        // Now we extract the root from that
+        vector<string> path = {start};
+        Id focus = startId;
+
+        while (focus != endId)
+        {
+            int min = Infinity;
+
+            for (weightedEdge edge : graph.weightedEdges(focus))
+            {
+                if ((int temp = distance[edge.object]) < min)
+                {
+                    min = temp;
+                    focus = edge.object;
+                };
+            };
+
+            path.push_back(graph.fromId(focus));
+        };
+
+        return path;
     };
 };
-
-
 
 template <typename Id = int>
 vector<string> djikstrasMultiEndpoint(string start, vector<string> end, GraphWithIdInternals<Id> graph)
 {
-   
-    
+
     Id room = graph.toId(start);
     int distance = Infinity;
 
@@ -176,12 +234,10 @@ vector<string> djikstrasMultiEndpoint(string start, vector<string> end, GraphWit
 
     while (isNotEnd(room))
     {
-
     }
 
-        dist[room] = 0;
+    dist[room] = 0;
     visited[room] = true;
-
 };
 
 // Since we are working with multiple exits we extend djikstras algorithm

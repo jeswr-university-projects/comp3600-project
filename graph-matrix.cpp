@@ -101,7 +101,9 @@ struct Matrix
     };
 
 private:
-    int rows, cols, dflt = 0;
+    int rows = 0;
+    int cols = 0;
+    int dflt = 0;
     vector<T> dfltCol;
     vector<vector<T>> matrix;
 };
@@ -244,18 +246,36 @@ public:
         return output;
     };
 
-    _weightedEdge<T> lightestEdge(T subject)
+    vector<_weightedEdge<int>> _weightedEdges(int subject)
+    {
+        vector<_weightedEdge<T>> output;
+        vector<int> edges = matrix.getCol(subject);
+        for (int i = 0; i < matrix.size(); i++)
+        {
+            if (edges[i] != 0)
+            {
+                output.push_back({
+                    subject : subject,
+                    object : i,
+                    weight : edges[i]
+                });
+            };
+        };
+        return output;
+    };
+
+    _weightedEdge<int> _lightestEdge(int subject)
     {
         _weightedEdge<T> output;
         output.weight = Infinity;
-        vector<int> edges = matrix.getCol(names.get(subject));
+        vector<int> edges = matrix.getCol(subject);
         for (int i = 0; i < matrix.size(); i++)
         {
             if (0 < edges[i] && edges[i] < output.weight)
             {
                 output = {
                     subject : subject,
-                    object : names.getKey(i),
+                    object : i,
                     weight : edges[i]
                 };
             };

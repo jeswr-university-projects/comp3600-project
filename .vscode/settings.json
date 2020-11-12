@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.chpl": "chapel",
         "*.tcc": "cpp",
         "istream": "cpp",
         "fstream": "cpp",
@@ -10,6 +11,10 @@
         "random": "cpp",
         "iostream": "cpp",
         "array": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "new": "cpp",
+        "functional": "cpp",
+        "regex": "cpp",
+        "typeinfo": "cpp"
     }
 }

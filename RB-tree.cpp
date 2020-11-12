@@ -51,9 +51,9 @@ struct RBNode
     };
     Value val;
     colours colour = Red;
-    RBNode<Value> *left = NULL;
-    RBNode<Value> *right = NULL;
-    RBNode<Value> *parent = NULL;
+    RBNode<Value> *left = nullptr;
+    RBNode<Value> *right = nullptr;
+    RBNode<Value> *parent = nullptr;
 };
 
 template <typename Value = int>
@@ -63,17 +63,17 @@ struct RBtree
     void insert(Value val)
     {
         RBNode<Value> *n = new RBNode<Value>(val);
-        RBNode<Value> *y = NULL;
+        RBNode<Value> *y = nullptr;
         RBNode<Value> *x = root;
 
-        while (x != NULL)
+        while (x != nullptr)
         {
             y = x;
             x = (val < x->val) ? x->left : x->right;
         };
         n->parent = y;
 
-        if (y == NULL)
+        if (y == nullptr)
         {
             root = n;
         }
@@ -86,7 +86,7 @@ struct RBtree
             y->right = n;
         };
 
-        // if (root == NULL)
+        // if (root == nullptr)
         // {
         //     root = new RBNode<Value>(val);
         //     root->colour = Black;
@@ -98,7 +98,7 @@ struct RBtree
         //     RBNode<Value> *node = root;
         //     RBNode<Value> *newNode = root;
 
-        //     while (newNode != NULL)
+        //     while (newNode != nullptr)
         //     {
         //         node = newNode;
         //         newNode = node->val < val ? node->right : node->left;
@@ -145,7 +145,7 @@ struct RBtree
         // {
         // https://stackoverflow.com/questions/3177241/what-is-the-best-way-to-concatenate-two-vectors
         cout << "flattening" << endl;
-        if (n == NULL)
+        if (n == nullptr)
         {
             vector<Value> x;
             x.clear();
@@ -173,7 +173,7 @@ struct RBtree
         // // vector<T> out;
         // // T last = NegInfinity;
 
-        // while (n->right != NULL)
+        // while (n->right != nullptr)
         // {
         //     n = n->right;
         // };
@@ -184,9 +184,9 @@ struct RBtree
 
         // return flattened().push_back(val);
 
-        // while (n != NULL)
+        // while (n != nullptr)
         // {
-        //     if (n->right == NULL || n->right->val > last)
+        //     if (n->right == nullptr || n->right->val > last)
         //     {
         //         last = n->right->val;
         //         out.push_back(last);
@@ -276,7 +276,7 @@ private:
 
     void postInsertRecolour(RBNode<Value> *node)
     {
-        while (node->parent != NULL && node->parent->parent !=NULL && node->parent->colour == Red)
+        while (node->parent != nullptr && node->parent->parent !=nullptr && node->parent->colour == Red)
         {
             if (node->parent == node->parent->parent->left)
             {
@@ -350,15 +350,15 @@ private:
         //             if (node->parent->parent->left->colour == Red)
         //             {
         //                 RBNode<Value> *granparent = Parent(Parent(node));
-        //                 if (granparent != NULL)
+        //                 if (granparent != nullptr)
         //                 {
         //                 };
 
-        //                 if (LChild(granparent) != NULL)
+        //                 if (LChild(granparent) != nullptr)
         //                 {
         //                 };
 
-        //                 if (granparent != NULL)
+        //                 if (granparent != nullptr)
         //                 {
         //                     granparent->left && granparent->colour
         //                 }
@@ -382,27 +382,27 @@ private:
         // };
     };
 
-    RBNode<Value> *root = NULL;
+    RBNode<Value> *root = nullptr;
     // vector<RBNode<Value>> nodes;
 
     RBNode<Value> *Parent(RBNode<Value> *node)
     {
-        return node == NULL ? NULL : node->parent;
+        return node == nullptr ? nullptr : node->parent;
     };
 
     RBNode<Value> *LChild(RBNode<Value> *node)
     {
-        return node == NULL ? NULL : node->left;
+        return node == nullptr ? nullptr : node->left;
     };
 
     RBNode<Value> *RChild(RBNode<Value> *node)
     {
-        return node == NULL ? NULL : node->right;
+        return node == nullptr ? nullptr : node->right;
     };
 
     bool isLeftChild(RBNode<Value> *node)
     {
-        return Parent(node) != NULL && (Parent(node)->left == node);
+        return Parent(node) != nullptr && (Parent(node)->left == node);
     };
 
     RBNode<Value> *Sibling(RBNode<Value> *node)
@@ -416,16 +416,16 @@ private:
         RBNode<Value> *prevParent = Parent(node);
         RBNode<Value> *localRoot = Parent(prevParent);
 
-        if (LChild(node) != NULL)
+        if (LChild(node) != nullptr)
         {
             prevParent->right = LChild(node);
             LChild(node)->parent = prevParent;
         };
 
-        if (localRoot == NULL)
+        if (localRoot == nullptr)
         {
             root = node;
-            node->parent = NULL;
+            node->parent = nullptr;
         }
         else if (LChild(localRoot) == prevParent)
         {
@@ -448,16 +448,16 @@ private:
         RBNode<Value> *prevParent = Parent(node);
         RBNode<Value> *localRoot = Parent(prevParent);
 
-        if (RChild(node) != NULL)
+        if (RChild(node) != nullptr)
         {
             prevParent->left = RChild(node);
             RChild(node)->parent = prevParent;
         };
 
-        if (localRoot == NULL)
+        if (localRoot == nullptr)
         {
             root = node;
-            node->parent = NULL;
+            node->parent = nullptr;
         }
         else if (RChild(localRoot) == prevParent)
         {
@@ -490,12 +490,12 @@ private:
     {
         colours oldColour = node->colour;
 
-        if (node->left == NULL)
+        if (node->left == nullptr)
         {
-            if (node->right == NULL)
+            if (node->right == nullptr)
             {
                 // Probably wont work
-                *node = NULL;
+                *node = nullptr;
                 // maybe this will
                 delete node;
             }
@@ -513,7 +513,7 @@ private:
                 node->right->parent = node->parent;
             };
         }
-        else if (node->right == NULL)
+        else if (node->right == nullptr)
         {
             if (isLeftChild(node))
             {
