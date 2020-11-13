@@ -27,10 +27,10 @@ room:AliceOffice a ach:Room ;
 room:BobOffice a ach:Room ;
     ach:width 2 ;
     ach:length 4 ;
-    ach:hasPathTo room:CharlieOffice ;
+    ach:hasPathTo room:CharlesOffice ;
     ach:hasBuildingExit false .
 
-room:CharlieOffice a ach:Room ;
+room:CharlesOffice a ach:Room ;
     ach:width 2 ;
     ach:length 4 ;
     ach:hasPathTo room:BobOffice ;

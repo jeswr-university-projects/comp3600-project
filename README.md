@@ -15,7 +15,7 @@ Note you may also need to update your path variable to the folder you are workin
 To calculate the escape paths for *all* entities in a building
 
 ```
-./escape_planner --calculate-paths --building-file=tests/buildings/test-1.ttl --person-file=tests/buildings/test-1.ttl --escape-file=escape.ttl
+./escape_planner --calculate-paths --building-file=tests/buildings/test-1.ttl --person-file=tests/people/small-group.ttl --escape-file=escape.ttl
 ```
 
 To calculate the risk of covid given the escape paths

@@ -399,19 +399,34 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
     //         };
     //     };
     // };
+    // cout << endl;
+    // cout << "--------------------- getting id ------------------" << endl;
+    // cout << graph.nodeCount() << endl;
+    // cout << graph.nameToId("http://architecture#roomCharlesOffice") << endl;
+
+    // cout << " ------------ analysing mappings --------------- " << endl;
+    // for (int i = 0; i < 4; i++)
+    // {
+    //     cout << graph.idToName(i) << " ("  << i << ") -> " << graph.idToName(paths.get(i)) << " (" << paths.get(i) << ")" << endl;
+    // };
+
+    graph.print();
 
     Map<Id, vector<Id>> outPaths;
+    cout << "--------------------------------generating escape triples---------------------------" << endl;
     for (Id s : starts)
     {
         vector<Id> outPath;
         Id p = s;
 
+
+        cout << p << paths.hasKey(p) << endl;
         while (paths.hasKey(p))
         {
             outPath.push_back(p);
             p = paths.get(p);
         };
-        outPath.push_back(p);
+        // outPath.push_back(p);
 
         outPaths.add(s, outPath);
     };

@@ -5,6 +5,11 @@
 #include "../rdf-types.h"
 using namespace std;
 
+struct TriplesAndPrefixes {
+    Triples triples;
+    Prefixes prefixes;
+};
+
 /**
  * Parses a single component (URI or object literal)
  * @param inFile an inFile stream
@@ -63,7 +68,7 @@ string component(ifstream &inFile, Prefixes &prefixes) {
  * returns the associated triples 
  * @param file the file name
  */
-Triples getTriples(string file) {
+TriplesAndPrefixes getTriples(string file) {
     ifstream inFile(file); // O(1) ish?
     Triples triples = {}; // O(1)
     Prefixes prefixes = {}; // O(1)
@@ -107,7 +112,10 @@ Triples getTriples(string file) {
             inFile >> c;
         };
     };
-    return triples;
+    return {
+        triples,
+        prefixes
+    };
 };
 // We can argue that the complexity of this algorithm is O(n)
 // where n is the length of the file (in characaters)

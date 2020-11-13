@@ -131,27 +131,29 @@ struct Map
     // ~O(1)
     K get(T key)
     {
-        cout << "inside get for key " << key << endl;
+        // cout << "inside get for key " << key << endl;
         Node<T, K> *ptr = this->start(key);
-        cout << "starting pointer is" << ptr << endl;
+        // cout << "starting pointer is" << ptr << endl;
         while (ptr != nullptr)
         {
-            cout << ptr->key << endl;
+            // cout << ptr->key << endl;
             if (ptr->key == key)
             {
-                cout << "found" << endl;
+                // cout << "found" << endl;
                 return ptr->value;
             };
             ptr = ptr->next;
             // cout << "inside while" << endl;
         };
-        throw "Error: Key not found";
+        // cout << 
+        cout << "erroneous key " << key << endl;
+        throw "Error: Key not found - " ;
     };
 
     // ~O(1)
     bool hasKey(T key)
     {
-        cout << "has key called" << endl;
+        // cout << "has key called" << endl;
         Node<T, K> *ptr = this->start(key);
         while (ptr != nullptr)
         {
@@ -223,11 +225,24 @@ struct Map
         return _size;
     };
 
+    void print()
+    {
+        for (int i = 0; i < len; i++)
+        {
+            Node<T, K>* ptr = this->val[i];
+            while (ptr != nullptr)
+            {
+                cout << ptr->key << " -> " << ptr->value << endl;
+                ptr = ptr->next;
+            };  
+        };
+    };
+
 private:
     int len = 1;
     int _size = 0;
     // Node<T, K>* node;
-    vector<Node<T, K> *> val = vector<Node<T, K> *>(0, nullptr);
+    vector<Node<T, K> *> val = vector<Node<T, K> *>(len, nullptr);
 
     // Generic string hash, but noting that
     // credit (https://computinglife.wordpress.com/2008/11/20/why-do-hash-functions-use-prime-numbers/)
@@ -266,8 +281,8 @@ private:
     // O(len(key)) [string] | O(1) [int]
     Node<T, K> *start(T key)
     {
-        cout << "the key is " << key << endl;
-        cout << "the slot is " << slot(key) << endl;
+        // cout << "the key is " << key << endl;
+        // cout << "the slot is " << slot(key) << endl;
         return this->val[slot(key)]; 
     };
 };
@@ -282,6 +297,8 @@ struct ReverseLookupMap
     
     void add(T key, K val)
     {
+        cout << "adding edge" << endl;
+        cout << key << endl;
         forward.add(key, val);
         backward.add(val, key);
     };
@@ -300,6 +317,7 @@ struct ReverseLookupMap
     // ~O(1)
     bool hasKey(T key)
     {
+        cout << "checking if key " << key << " exists" << endl;
         return forward.hasKey(key);
     };
 
@@ -313,6 +331,14 @@ struct ReverseLookupMap
     int size()
     {
         return backward.size();
+    };
+
+    void print()
+    {
+        cout << "Forward mappings:" << endl;
+        forward.print();
+        cout << "Backward mappings" << endl;
+        backward.print();
     };
 
 private:

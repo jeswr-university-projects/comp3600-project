@@ -1,0 +1,44 @@
+@prefix ach: <http://architecture#> .
+@prefix ex: <http://example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix room: <http://architecture#room_> .
+
+ex:Alice ex:canEscape false .
+
+ex:Bob ex:canEscape true;
+	ex:escapeRoute ex:1 .
+
+ex:1 ex:path ach:room_BobOffice;
+	rdfs:rest ex:2 .
+
+ex:2 ex:path ach:room_CharlesOffice;
+	rdfs:rest ex:3 .
+
+ex:3 ex:path ach:room_ConferenceRoom1;
+	rdfs:rest ex:4 .
+
+ex:4 ex:path ach:room_ConferenceRoom2;
+	rdfs:rest ex:5 .
+
+ex:5 ex:path ach:room_AliceOffice;
+	rdfs:rest ex:6 .
+
+ex:6 rdfs:rest rdfs:nil .
+
+ex:Charles ex:canEscape true;
+	ex:escapeRoute ex:7 .
+
+ex:7 ex:path ach:room_CharlesOffice;
+	rdfs:rest ex:8 .
+
+ex:8 ex:path ach:room_ConferenceRoom1;
+	rdfs:rest ex:9 .
+
+ex:9 ex:path ach:room_ConferenceRoom2;
+	rdfs:rest ex:10 .
+
+ex:10 ex:path ach:room_AliceOffice;
+	rdfs:rest ex:11 .
+
+ex:11 rdfs:rest rdfs:nil .

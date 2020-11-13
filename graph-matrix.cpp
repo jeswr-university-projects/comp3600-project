@@ -311,11 +311,18 @@ public:
         cout << "----" << endl;
         matrix.print();
         cout << "----" << endl;
+        names.print();
+        cout << "---------------" << endl;
     };
 
     int nameToId(T key)
     {
         int id;
+
+        cout << "name to id called " << names.hasKey(key) << endl;
+        cout << "------------------------------------------------" << endl;
+        print();
+        cout << "------------------------------------------------" << endl;
 
         if (!names.hasKey(key))
         {
