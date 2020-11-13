@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <array>
 #include <vector>
@@ -187,7 +189,7 @@ struct Map
                 ptr = ptr->next;
             };
         };
-        
+
         return result; 
     };
 

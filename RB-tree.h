@@ -1,6 +1,4 @@
-#ifndef __GUARDED_RB_TREE
-#define __GUARDED_RB_TREE
-
+#pragma once
 #include <vector>
 #include <limits>
 using namespace std;
@@ -414,5 +412,3 @@ private:
         };
     };
 };
-
-#endif

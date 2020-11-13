@@ -1,6 +1,4 @@
-#ifndef __GUARDED_DSIKSTRAS
-#define __GUARDED_DJIKSTRAS
-
+#pragma once
 #include <vector>
 #include <iostream>
 #include "graph.h"
@@ -75,4 +73,3 @@ vector<string> version2Escape(string start, vector<string> exits, GraphWithIdInt
 
 // Run above - then we can look into doing something with computing the MST immediately after we ingest
 // the graph
-#endif

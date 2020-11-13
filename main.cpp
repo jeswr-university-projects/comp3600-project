@@ -1,3 +1,4 @@
+// #pragma once
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -7,6 +8,7 @@
 // #include "rdf-types.h"
 #include "rdf-io/reader.cpp"
 #include "buildingTriples2graph.cpp"
+#include "djikstras.cpp"
 using namespace std;
 using namespace boost;
 using namespace boost::program_options;
@@ -62,6 +64,18 @@ int main(int argc, char *argv[])
         // person = ingestCliTriples("person-file", vm);
 
         GraphMatrix<string> graph = buildingsTriplesToGraph(building);
+
+        set<int> exits;
+
+        for (Triple t : building)
+        {
+            if (t[1] == "http://architecture#hasBuildingExit" && t[2] == "true")
+            {
+                exits.insert(graph.nameToId(t[0]));
+            };
+        };
+
+        Map<int, vector<int>> paths = multiStartMultiEnd<int>({1}, exits, graph);
 
         cout << "ingesting data ..." << endl;
         if (!vm.count("escape-file")) {

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include <iostream>
 // #include "graph.h"
@@ -36,94 +38,94 @@ using namespace std;
 // Another assumption is that the RDF file must represent
 // a valid building; be correctly serialised; and that there
 // is a path
-int Infinity = std::numeric_limits<int>::max();
+// int Infinity = std::numeric_limits<int>::max();
 
-template <typename Id = int>
-vector<string> djikstras(Id start, Id end, GraphWithIdInternals<Id> graph)
-{
-    // Id of the initial node we are working with
-    // Id startId = graph.toId(start);
-    // Id endId = graph.toId(end);
-    // Initialise an array, with length equal to the number of
-    // nodes
+// template <typename Id = int>
+// vector<string> djikstras(Id start, Id end, GraphWithIdInternals<Id> graph)
+// {
+//     // Id of the initial node we are working with
+//     // Id startId = graph.toId(start);
+//     // Id endId = graph.toId(end);
+//     // Initialise an array, with length equal to the number of
+//     // nodes
 
-    // In order for this to work we do need some way of
-    // mapping each node to an integer - TODO: WORK OUT
-    // if this is ok
+//     // In order for this to work we do need some way of
+//     // mapping each node to an integer - TODO: WORK OUT
+//     // if this is ok
 
-    // Possibly use hash maps here instead when generalising
-    vector<bool> visited(graph.nodeCount(), false);
-    vector<int> distance(graph.nodeCount(), Infinity);
+//     // Possibly use hash maps here instead when generalising
+//     vector<bool> visited(graph.nodeCount(), false);
+//     vector<int> distance(graph.nodeCount(), Infinity);
 
-    int current = start;
-    int currentDistance = 0;
+//     int current = start;
+//     int currentDistance = 0;
 
-    distance[current] = currentDistance;
+//     distance[current] = currentDistance;
 
-    // TODO: FIX THE SECOND CONDITION IN THIS LOOP
-    while (!visited[endId] && currentDistance != Infinity)
-    {
-        // vector<weightedEdge> edges = graph.weightedEdges(current);
+//     // TODO: FIX THE SECOND CONDITION IN THIS LOOP
+//     while (!visited[endId] && currentDistance != Infinity)
+//     {
+//         // vector<weightedEdge> edges = graph.weightedEdges(current);
 
-        int minTentative = Infinity;
-        Id nextId;
+//         int minTentative = Infinity;
+//         Id nextId;
 
-        for (weightedEdge edge : graph.weightedEdges(current))
-        {
-            // Check to make sure the node has not yet been visited
-            if (!visited[edges[i].object])
-            {
-                int tentativeDistance = edges[i].weight + currentDistance;
+//         for (weightedEdge edge : graph.weightedEdges(current))
+//         {
+//             // Check to make sure the node has not yet been visited
+//             if (!visited[edges[i].object])
+//             {
+//                 int tentativeDistance = edges[i].weight + currentDistance;
 
-                if (tentativeDistance < minTentative)
-                {
-                    minTentative = tentativeDistance;
-                    nextId = i;
-                };
-                // Take the minimium of the current distance and the tentative distance
-                distance[i] = min(distance[i], edges[i].weight + currentDistance);
-            };
-        };
-        visited[current] = true;
-        currentDistance = minTentative;
-        current = i;
-    };
+//                 if (tentativeDistance < minTentative)
+//                 {
+//                     minTentative = tentativeDistance;
+//                     nextId = i;
+//                 };
+//                 // Take the minimium of the current distance and the tentative distance
+//                 distance[i] = min(distance[i], edges[i].weight + currentDistance);
+//             };
+//         };
+//         visited[current] = true;
+//         currentDistance = minTentative;
+//         current = i;
+//     };
 
-    // Now we extract the root from that
-    vector<string> path = {start};
-    Id focus = start;
+//     // Now we extract the root from that
+//     vector<string> path = {start};
+//     Id focus = start;
 
-    while (focus != end)
-    {
-        int min = Infinity;
+//     while (focus != end)
+//     {
+//         int min = Infinity;
 
-        for (weightedEdge edge : graph.weightedEdges(focus))
-        {
-            if ((int temp = distance[edge.object]) < min)
-            {
-                min = temp;
-                focus = edge.object;
-            };
-        };
+//         for (weightedEdge edge : graph.weightedEdges(focus))
+//         {
+//             if ((int temp = distance[edge.object]) < min)
+//             {
+//                 min = temp;
+//                 focus = edge.object;
+//             };
+//         };
 
-        path.push_back(graph.fromId(focus));
-    };
+//         path.push_back(graph.fromId(focus));
+//     };
 
-    return path;
-};
+//     return path;
+// };
 
-template <typename Id = int>
-bool isNotEnd(Id n, vector<Id> &endIds)
-{
-    for (int i : endIds)
-    {
-        if (i == n)
-        {
-            return false;
-        };
-    };
-    return true;
-};
+// template <typename Id = int>
+// bool isNotEnd(Id n, vector<Id> &endIds)
+// {
+//     for (int i : endIds)
+//     {
+//         if (i == n)
+//         {
+//             return false;
+//         };
+//     };
+//     return true;
+// };
 
 struct nodeInfo
 {
@@ -138,7 +140,6 @@ struct Info
     bool visited = false;
     int weight = 0;
 };
-
 
 // template <typename Id = int>
 // Map<Id, vector<Id>> multiStartMultiEndAbstracted(vector<Id> starts, vector<Id> ends, GraphMatrix<Id> graph)
@@ -189,13 +190,10 @@ struct Info
 
 //     return outPaths;
 
-
 //     // for (Id end : ends)
 //     // {
 
 //     // };
-
-
 
 //     // for (Id end : ends)
 //     // {
@@ -267,14 +265,37 @@ struct Info
 //     // };
 // };
 template <typename Id = int>
-struct NodeAndPrev {
+struct NodeAndPrev
+{
+    NodeAndPrev(Id _id, Id _prev)
+    {
+        id = _id;
+        prev = _prev;
+    };
+    bool operator<(NodeAndPrev<Id> x)
+    const {
+        return x.id < x.id;
+    };
+    bool operator==(NodeAndPrev<Id> x)
+    const {
+        return x.x.id == x.y.id;
+    };
     Id prev;
     Id id;
 };
 
-template <typename Id = int>
-Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix<Id> graph)
+// template <typename Id = int>
+// bool NodeAndPrev operator<(NodeAndPrev<Id> x, NodeAndPrev<Id> y)
+// {
+//     x.id < y.id;
+// };
+
+template <typename Id = int, typename Node = string>
+Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix<Node> graph)
 {
+    Map<Id, vector<Id>> x;
+    // return x;
+
     Map<Id, Id> paths(graph.nodeCount());
     // Map<Id, int> weights(graph.nodeCount());
     Map<int, set<NodeAndPrev<Id>>> distance;
@@ -282,32 +303,34 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
     set<NodeAndPrev<Id>> endsTemp;
     for (Id e : ends)
     {
-        endsTemp.insert({
-            id : e,
-            prev : -1
-        });
+        endsTemp.insert(NodeAndPrev<Id>(e, -1));
     };
+
+    return x;
 
     distance.add(0, endsTemp);
 
     for (int i = 0; distance.size() > 0; i++)
     {
-        for (NodeAndPrev<Id> n : distance.get(i))
+        if (distance.hasKey(i))
         {
-            if (!weights.hasKey(n.id))
+            for (NodeAndPrev<Id> n : distance.get(i))
             {
-                weights.add(n.id, i);
-                paths.add(n.id, n.prev);
-
-                for (_weightedEdge<Id> e : graph._weightedEdgesInto(n.id))
+                if (!paths.hasKey(n.id))
                 {
-                    if (!distance.hasKey(i + e.weight))
+                    // weights.add(n.id, i);
+                    paths.add(n.id, n.prev);
+
+                    for (_weightedEdge<Id> e : graph._weightedEdgesInto(n.id))
                     {
-                        distance.add(i + e.weight, {{id : e.subject, prev : n.id}})
-                    }
-                    else
-                    {
-                        distance.get(i + e.weight).insert({id : e.subject, prev : n.id})
+                        if (!distance.hasKey(i + e.weight))
+                        {
+                            distance.add(i + e.weight, {NodeAndPrev<Id>(e.subject, n.id)});
+                        }
+                        else
+                        {
+                            distance.get(i + e.weight).insert(NodeAndPrev<Id>(e.subject, n.id));
+                        };
                     };
                 };
             };
@@ -334,7 +357,7 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
     // return outPaths;
 
     // // // set<Id> updatable = ends;
-    
+
     // // // int i = 0;
 
     // // while (updatable.size() > 0)
@@ -342,27 +365,13 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
 
     // // };
 
-
-
-
-
-
-
     // set<Id> x = distance.get(1);
     // x.insert()
 
-
-
-    
     // int w = 0;
 
     // ends
-    
-    
-    
-    
-    
-    
+
     // for (Id e : ends)
     // {
     //     weights.add(e, 0);
@@ -406,7 +415,6 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
 
     return outPaths;
 };
-
 
 // template <typename Id = int>
 // Map<Id, vector<Id>> multiStartMultiEnd(vector<Id> starts, vector<Id> ends, GraphMatrix<Id> graph)
@@ -457,13 +465,10 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
 
 //     return outPaths;
 
-
 //     // for (Id end : ends)
 //     // {
 
 //     // };
-
-
 
 //     // for (Id end : ends)
 //     // {
@@ -561,19 +566,19 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
 
 // Since we are working with multiple exits we extend djikstras algorithm
 // here is the first more "naive" method
-template <typename Id = int>
-vector<string> naiveEscape(string start, vector<string> exits, GraphWithIdInternals<Id> graph)
-{
-    // In the naive method we just apply djikstras algorithm to each exit
-    // and then take the best
-}
+// template <typename Id = int>
+// vector<string> naiveEscape(string start, vector<string> exits, GraphWithIdInternals<Id> graph)
+// {
+//     // In the naive method we just apply djikstras algorithm to each exit
+//     // and then take the best
+// }
 
 // In this less naive method algorithm, we note that we can terminate an iteration of djikstras
 // algorithm as soon as we know there is a more expansive path.
-template <typename Id = int>
-vector<string> version2Escape(string start, vector<string> exits, GraphWithIdInternals<Id> graph)
-{
-}
+// template <typename Id = int>
+// vector<string> version2Escape(string start, vector<string> exits, GraphWithIdInternals<Id> graph)
+// {
+// }
 
 // Run above - then we can look into doing something with computing the MST immediately after we ingest
 // the graph

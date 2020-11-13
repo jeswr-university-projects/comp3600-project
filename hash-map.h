@@ -1,6 +1,4 @@
-#ifndef __GUARDED_HASH_MAP
-#define __GUARDED_HASH_MAP
-
+#pragma once
 #include <iostream>
 using namespace std;
 /**
@@ -23,4 +21,3 @@ class HashMap {
         int len;
         array<int, len> val;
 };
-#endif

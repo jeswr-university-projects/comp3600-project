@@ -1,3 +1,5 @@
+#pragma once
+
 #include "graph-list.cpp" rename("Graph", "GraphList");
 #include "graph-matrix.cpp" rename("Graph", "GraphMatrix");
 

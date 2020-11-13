@@ -1,3 +1,5 @@
+#pragma once
+
 // #include "RB-tree.h"
 
 // // #ifndef __GUARDED_RB_TREE

@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -312,10 +313,6 @@ public:
         cout << "----" << endl;
     };
 
-private:
-    SquareMatrix<int> matrix;
-    ReverseLookupMap<T, int> names;
-    int edges = 0;
     int nameToId(T key)
     {
         int id;
@@ -331,6 +328,11 @@ private:
         };
         return id;
     };
+
+private:
+    SquareMatrix<int> matrix;
+    ReverseLookupMap<T, int> names;
+    int edges = 0;
 };
 
 // int main()
