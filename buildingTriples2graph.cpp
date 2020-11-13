@@ -84,16 +84,14 @@ GraphMatrix<string> buildingsTriplesToGraph(Triples buildingTriples)
     // return buildingGraph;
 };
 
-int main()
-{
-    Triples t = getTriples("tests/buildings/test-1.ttl");
-    for (Triple ts : t)
-    {
-        cout << ts[0] << ts[1] << ts[2] << endl;
-    };
+// int main()
+// {
+//     Triples t = getTriples("tests/buildings/test-1.ttl");
+//     for (Triple ts : t)
+//     {
+//         cout << ts[0] << ts[1] << ts[2] << endl;
+//     };
 
-    // Functionality one
-    buildingsTriplesToGraph(t);
-
-
-};
+//     // Functionality one
+//     buildingsTriplesToGraph(t);
+// };

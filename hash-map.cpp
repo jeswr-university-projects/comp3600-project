@@ -1,6 +1,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <set>
 using namespace std;
 /**
  * Hash map used throughout this
@@ -170,6 +171,24 @@ struct Map
             };
         };
         return false;
+    };
+
+    // Gets all values in the hash map
+    vector<K> values()
+    {
+        vector<K> result;
+        result.reserve(size);
+
+        for (Node<T, K>* ptr : val)
+        {
+            while (ptr != nullptr)
+            {
+                result.push_back(ptr->value);
+                ptr = ptr->next;
+            };
+        };
+        
+        return result; 
     };
 
     // Finds the *first* key with

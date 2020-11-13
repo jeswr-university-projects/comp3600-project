@@ -246,6 +246,24 @@ public:
         return output;
     };
 
+     vector<_weightedEdge<int>> _weightedEdgesInto(int object)
+    {
+        vector<_weightedEdge<T>> output;
+        vector<int> edges = matrix.getRow(object);
+        for (int i = 0; i < matrix.size(); i++)
+        {
+            if (edges[i] != 0)
+            {
+                output.push_back({
+                    subject : i,
+                    object : object,
+                    weight : edges[i]
+                });
+            };
+        };
+        return output;
+    };
+
     vector<_weightedEdge<int>> _weightedEdges(int subject)
     {
         vector<_weightedEdge<T>> output;
@@ -269,6 +287,10 @@ public:
         _weightedEdge<T> output;
         output.weight = Infinity;
         vector<int> edges = matrix.getCol(subject);
+
+        
+
+
         for (int i = 0; i < matrix.size(); i++)
         {
             if (0 < edges[i] && edges[i] < output.weight)

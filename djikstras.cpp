@@ -1,6 +1,8 @@
 #include <vector>
 #include <iostream>
-#include "graph.h"
+// #include "graph.h"
+#include "graph-matrix.cpp"
+#include <set>
 #include <limits>
 // #include <map>
 #include "hash-map.cpp"
@@ -37,11 +39,11 @@ using namespace std;
 int Infinity = std::numeric_limits<int>::max();
 
 template <typename Id = int>
-vector<string> djikstras(string start, string end, GraphWithIdInternals<Id> graph)
+vector<string> djikstras(Id start, Id end, GraphWithIdInternals<Id> graph)
 {
     // Id of the initial node we are working with
-    Id startId = graph.toId(start);
-    Id endId = graph.toId(end);
+    // Id startId = graph.toId(start);
+    // Id endId = graph.toId(end);
     // Initialise an array, with length equal to the number of
     // nodes
 
@@ -53,7 +55,7 @@ vector<string> djikstras(string start, string end, GraphWithIdInternals<Id> grap
     vector<bool> visited(graph.nodeCount(), false);
     vector<int> distance(graph.nodeCount(), Infinity);
 
-    int current = startId;
+    int current = start;
     int currentDistance = 0;
 
     distance[current] = currentDistance;
@@ -89,9 +91,9 @@ vector<string> djikstras(string start, string end, GraphWithIdInternals<Id> grap
 
     // Now we extract the root from that
     vector<string> path = {start};
-    Id focus = startId;
+    Id focus = start;
 
-    while (focus != endId)
+    while (focus != end)
     {
         int min = Infinity;
 
@@ -137,108 +139,425 @@ struct Info
     int weight = 0;
 };
 
-template <typename Id = int>
-Map<Id, vector<Id>> multiStartMultiEnd(vector<Id> starts, vector<Id> ends, GraphWithIdInternals<Id> graph)
-{
-    Map<Id, vector<Id>> paths;
-    Map<Id, Info> ending;
-    ending.reserve(ends.size());
 
-    for (Id end : ends)
+// template <typename Id = int>
+// Map<Id, vector<Id>> multiStartMultiEndAbstracted(vector<Id> starts, vector<Id> ends, GraphMatrix<Id> graph)
+// {
+//     Map<Id, Id> paths(graph.nodeCount());
+//     Map<Id, int> weights(graph.nodeCount());
+
+//     for (Id e : ends)
+//     {
+//         weights.add(e, 0);
+//     };
+
+//     vector<Id> updated = ends;
+
+//     // Dynamic programming solution to determine optimal
+//     // path for *all* nodes in the graph
+//     while (updated.size() > 0)
+//     {
+//         for (Id node : updated)
+//         {
+//             int weight = weights.get(node);
+//             for (_weightedEdge<Id> w : graph._weightedEdgesInto(node))
+//             {
+//                 if (!weights.hasKey(w.subject) || (weights.get(node) + weight < weights.get(w.subject)))
+//                 {
+//                     paths.add(w.subject, node);
+//                     weights.add(w.subject, weights.get(node) + weight)
+//                 };
+//             };
+//         };
+//     };
+
+//     Map<Id, vector<Id>> outPaths;
+//     for (Id s : starts)
+//     {
+//         vector<Id> outPath;
+//         Id p = s;
+
+//         while (paths.hasKey(p))
+//         {
+//             outPath.push_back(p);
+//             p = paths.get(p);
+//         };
+//         outPath.push_back(p);
+
+//         outPaths.add(s, outPath);
+//     };
+
+//     return outPaths;
+
+
+//     // for (Id end : ends)
+//     // {
+
+//     // };
+
+
+
+//     // for (Id end : ends)
+//     // {
+//     //     weights.add(end, 0);
+//     // };
+
+//     // for (Id start : starts)
+//     // {
+//     //     // Possibly use hash maps here instead when generalising
+//     //     vector<bool> visited(graph.nodeCount(), false);
+//     //     vector<int> distance(graph.nodeCount(), Infinity);
+
+//     //     int current = start;
+//     //     int currentDistance = 0;
+
+//     //     distance[current] = currentDistance;
+
+//     //     // TODO: FIX THE SECOND CONDITION IN THIS LOOP
+//     //     while (
+//     //         !visited[endId] && currentDistance != Infinity)
+//     //     {
+//     //         // vector<weightedEdge> edges = graph.weightedEdges(current);
+
+//     //         int minTentative = Infinity;
+//     //         Id nextId;
+
+//     //         for (weightedEdge edge : graph.weightedEdges(current))
+//     //         {
+//     //             // Check to make sure the node has not yet been visited
+//     //             if (!visited[edges[i].object])
+//     //             {
+//     //                 int tentativeDistance = edges[i].weight + currentDistance;
+
+//     //                 if (tentativeDistance < minTentative)
+//     //                 {
+//     //                     minTentative = tentativeDistance;
+//     //                     nextId = i;
+//     //                 };
+//     //                 // Take the minimium of the current distance and the tentative distance
+//     //                 distance[i] = min(distance[i], edges[i].weight + currentDistance);
+//     //             };
+//     //         };
+//     //         visited[current] = true;
+//     //         currentDistance = minTentative;
+//     //         current = i;
+//     //     };
+
+//     //     // Now we extract the root from that
+//     //     vector<string> path = {start};
+//     //     Id focus = startId;
+
+//     //     while (focus != endId)
+//     //     {
+//     //         int min = Infinity;
+
+//     //         for (weightedEdge edge : graph.weightedEdges(focus))
+//     //         {
+//     //             if ((int temp = distance[edge.object]) < min)
+//     //             {
+//     //                 min = temp;
+//     //                 focus = edge.object;
+//     //             };
+//     //         };
+
+//     //         path.push_back(graph.fromId(focus));
+//     //     };
+
+//     //     return path;
+//     // };
+// };
+template <typename Id = int>
+struct NodeAndPrev {
+    Id prev;
+    Id id;
+};
+
+template <typename Id = int>
+Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix<Id> graph)
+{
+    Map<Id, Id> paths(graph.nodeCount());
+    // Map<Id, int> weights(graph.nodeCount());
+    Map<int, set<NodeAndPrev<Id>>> distance;
+
+    set<NodeAndPrev<Id>> endsTemp;
+    for (Id e : ends)
     {
-        ending.add(end, {
-            end : true,
-            weight : 0
+        endsTemp.insert({
+            id : e,
+            prev : -1
         });
     };
 
-    for (Id start : starts)
+    distance.add(0, endsTemp);
+
+    for (int i = 0; distance.size() > 0; i++)
     {
-        // Possibly use hash maps here instead when generalising
-        vector<bool> visited(graph.nodeCount(), false);
-        vector<int> distance(graph.nodeCount(), Infinity);
-
-        int current = startId;
-        int currentDistance = 0;
-
-        distance[current] = currentDistance;
-
-        // TODO: FIX THE SECOND CONDITION IN THIS LOOP
-        while (!visited[endId] && currentDistance != Infinity)
+        for (NodeAndPrev<Id> n : distance.get(i))
         {
-            // vector<weightedEdge> edges = graph.weightedEdges(current);
-
-            int minTentative = Infinity;
-            Id nextId;
-
-            for (weightedEdge edge : graph.weightedEdges(current))
+            if (!weights.hasKey(n.id))
             {
-                // Check to make sure the node has not yet been visited
-                if (!visited[edges[i].object])
-                {
-                    int tentativeDistance = edges[i].weight + currentDistance;
+                weights.add(n.id, i);
+                paths.add(n.id, n.prev);
 
-                    if (tentativeDistance < minTentative)
+                for (_weightedEdge<Id> e : graph._weightedEdgesInto(n.id))
+                {
+                    if (!distance.hasKey(i + e.weight))
                     {
-                        minTentative = tentativeDistance;
-                        nextId = i;
+                        distance.add(i + e.weight, {{id : e.subject, prev : n.id}})
+                    }
+                    else
+                    {
+                        distance.get(i + e.weight).insert({id : e.subject, prev : n.id})
                     };
-                    // Take the minimium of the current distance and the tentative distance
-                    distance[i] = min(distance[i], edges[i].weight + currentDistance);
                 };
             };
-            visited[current] = true;
-            currentDistance = minTentative;
-            current = i;
         };
+        distance.remove(i);
+    };
 
-        // Now we extract the root from that
-        vector<string> path = {start};
-        Id focus = startId;
+    //     Map<Id, vector<Id>> outPaths;
+    // for (Id s : starts)
+    // {
+    //     vector<Id> outPath;
+    //     Id p = s;
 
-        while (focus != endId)
+    //     while (paths.hasKey(p))
+    //     {
+    //         outPath.push_back(p);
+    //         p = paths.get(p);
+    //     };
+    //     outPath.push_back(p);
+
+    //     outPaths.add(s, outPath);
+    // };
+
+    // return outPaths;
+
+    // // // set<Id> updatable = ends;
+    
+    // // // int i = 0;
+
+    // // while (updatable.size() > 0)
+    // // {
+
+    // // };
+
+
+
+
+
+
+
+    // set<Id> x = distance.get(1);
+    // x.insert()
+
+
+
+    
+    // int w = 0;
+
+    // ends
+    
+    
+    
+    
+    
+    
+    // for (Id e : ends)
+    // {
+    //     weights.add(e, 0);
+    // };
+
+    // vector<Id> updated = ends;
+
+    // // Dynamic programming solution to determine optimal
+    // // path for *all* nodes in the graph
+    // while (updated.size() > 0)
+    // {
+    //     for (Id node : updated)
+    //     {
+    //         int weight = weights.get(node);
+    //         for (_weightedEdge<Id> w : graph._weightedEdgesInto(node))
+    //         {
+    //             if (!weights.hasKey(w.subject) || (weights.get(node) + weight < weights.get(w.subject)))
+    //             {
+    //                 paths.add(w.subject, node);
+    //                 weights.add(w.subject, weights.get(node) + weight)
+    //             };
+    //         };
+    //     };
+    // };
+
+    Map<Id, vector<Id>> outPaths;
+    for (Id s : starts)
+    {
+        vector<Id> outPath;
+        Id p = s;
+
+        while (paths.hasKey(p))
         {
-            int min = Infinity;
-
-            for (weightedEdge edge : graph.weightedEdges(focus))
-            {
-                if ((int temp = distance[edge.object]) < min)
-                {
-                    min = temp;
-                    focus = edge.object;
-                };
-            };
-
-            path.push_back(graph.fromId(focus));
+            outPath.push_back(p);
+            p = paths.get(p);
         };
+        outPath.push_back(p);
 
-        return path;
-    };
-};
-
-template <typename Id = int>
-vector<string> djikstrasMultiEndpoint(string start, vector<string> end, GraphWithIdInternals<Id> graph)
-{
-
-    Id room = graph.toId(start);
-    int distance = Infinity;
-
-    vector<bool> visited(graph.nodeCount(), false);
-    vector<int> dist(graph.nodeCount(), Infinity);
-
-    vector<Id> endIds;
-    for (string e : end)
-    {
-        endIds.push_back(graph.toId(e));
+        outPaths.add(s, outPath);
     };
 
-    while (isNotEnd(room))
-    {
-    }
-
-    dist[room] = 0;
-    visited[room] = true;
+    return outPaths;
 };
+
+
+// template <typename Id = int>
+// Map<Id, vector<Id>> multiStartMultiEnd(vector<Id> starts, vector<Id> ends, GraphMatrix<Id> graph)
+// {
+//     Map<Id, Id> paths(graph.nodeCount());
+//     Map<Id, int> weights(graph.nodeCount());
+
+//     for (Id e : ends)
+//     {
+//         weights.add(e, 0);
+//     };
+
+//     vector<Id> updated = ends;
+
+//     // Dynamic programming solution to determine optimal
+//     // path for *all* nodes in the graph
+//     while (updated.size() > 0)
+//     {
+//         for (Id node : updated)
+//         {
+//             int weight = weights.get(node);
+//             for (_weightedEdge<Id> w : graph._weightedEdgesInto(node))
+//             {
+//                 if (!weights.hasKey(w.subject) || (weights.get(node) + weight < weights.get(w.subject)))
+//                 {
+//                     paths.add(w.subject, node);
+//                     weights.add(w.subject, weights.get(node) + weight)
+//                 };
+//             };
+//         };
+//     };
+
+//     Map<Id, vector<Id>> outPaths;
+//     for (Id s : starts)
+//     {
+//         vector<Id> outPath;
+//         Id p = s;
+
+//         while (paths.hasKey(p))
+//         {
+//             outPath.push_back(p);
+//             p = paths.get(p);
+//         };
+//         outPath.push_back(p);
+
+//         outPaths.add(s, outPath);
+//     };
+
+//     return outPaths;
+
+
+//     // for (Id end : ends)
+//     // {
+
+//     // };
+
+
+
+//     // for (Id end : ends)
+//     // {
+//     //     weights.add(end, 0);
+//     // };
+
+//     // for (Id start : starts)
+//     // {
+//     //     // Possibly use hash maps here instead when generalising
+//     //     vector<bool> visited(graph.nodeCount(), false);
+//     //     vector<int> distance(graph.nodeCount(), Infinity);
+
+//     //     int current = start;
+//     //     int currentDistance = 0;
+
+//     //     distance[current] = currentDistance;
+
+//     //     // TODO: FIX THE SECOND CONDITION IN THIS LOOP
+//     //     while (
+//     //         !visited[endId] && currentDistance != Infinity)
+//     //     {
+//     //         // vector<weightedEdge> edges = graph.weightedEdges(current);
+
+//     //         int minTentative = Infinity;
+//     //         Id nextId;
+
+//     //         for (weightedEdge edge : graph.weightedEdges(current))
+//     //         {
+//     //             // Check to make sure the node has not yet been visited
+//     //             if (!visited[edges[i].object])
+//     //             {
+//     //                 int tentativeDistance = edges[i].weight + currentDistance;
+
+//     //                 if (tentativeDistance < minTentative)
+//     //                 {
+//     //                     minTentative = tentativeDistance;
+//     //                     nextId = i;
+//     //                 };
+//     //                 // Take the minimium of the current distance and the tentative distance
+//     //                 distance[i] = min(distance[i], edges[i].weight + currentDistance);
+//     //             };
+//     //         };
+//     //         visited[current] = true;
+//     //         currentDistance = minTentative;
+//     //         current = i;
+//     //     };
+
+//     //     // Now we extract the root from that
+//     //     vector<string> path = {start};
+//     //     Id focus = startId;
+
+//     //     while (focus != endId)
+//     //     {
+//     //         int min = Infinity;
+
+//     //         for (weightedEdge edge : graph.weightedEdges(focus))
+//     //         {
+//     //             if ((int temp = distance[edge.object]) < min)
+//     //             {
+//     //                 min = temp;
+//     //                 focus = edge.object;
+//     //             };
+//     //         };
+
+//     //         path.push_back(graph.fromId(focus));
+//     //     };
+
+//     //     return path;
+//     // };
+// };
+
+// template <typename Id = int>
+// vector<string> djikstrasMultiEndpoint(string start, vector<string> end, GraphWithIdInternals<Id> graph)
+// {
+
+//     Id room = graph.toId(start);
+//     int distance = Infinity;
+
+//     vector<bool> visited(graph.nodeCount(), false);
+//     vector<int> dist(graph.nodeCount(), Infinity);
+
+//     vector<Id> endIds;
+//     for (string e : end)
+//     {
+//         endIds.push_back(graph.toId(e));
+//     };
+
+//     while (isNotEnd(room))
+//     {
+//     }
+
+//     dist[room] = 0;
+//     visited[room] = true;
+// };
 
 // Since we are working with multiple exits we extend djikstras algorithm
 // here is the first more "naive" method
