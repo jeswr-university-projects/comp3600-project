@@ -249,7 +249,7 @@ public:
 
      vector<_weightedEdge<int>> _weightedEdgesInto(int object)
     {
-        vector<_weightedEdge<T>> output;
+        vector<_weightedEdge<int>> output;
         vector<int> edges = matrix.getRow(object);
         for (int i = 0; i < matrix.size(); i++)
         {
@@ -327,6 +327,11 @@ public:
             id = names.get(key);
         };
         return id;
+    };
+
+    T idToName(int Id)
+    {
+        return names.getKey(Id);
     };
 
 private:

@@ -4,7 +4,7 @@
 room:Library a ach:Room ;
     ach:width 15 ;
     ach:length 20 ;
-    ach:hasBuildingExit true .
+    ach:hasBuildingExit false .
 
 room:ConferenceRoom1 a ach:Room ;
     ach:width 5 ;
@@ -16,12 +16,13 @@ room:ConferenceRoom1 a ach:Room ;
 room:ConferenceRoom2 a ach:Room ;
     ach:width 6 ;
     ach:length 8 ;
-    ach:hasBuildingExit true .
+    ach:hasPathTo room:AliceOffice ;
+    ach:hasBuildingExit false .
 
 room:AliceOffice a ach:Room ;
     ach:width 2 ;
     ach:length 4 ;
-    ach:hasBuildingExit false .
+    ach:hasBuildingExit true .
 
 room:BobOffice a ach:Room ;
     ach:width 2 ;

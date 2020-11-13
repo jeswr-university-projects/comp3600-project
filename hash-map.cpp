@@ -72,7 +72,7 @@ struct Map
 
         if (this->start(key) == nullptr)
         {
-            delete this->val[slot(key)];
+            // delete this->val[slot(key)];
             this->val[slot(key)] = new Node<T, K>(key, val);
             _size++;
         }
@@ -89,7 +89,7 @@ struct Map
             }
             else
             {
-                delete ptr->next;
+                // delete ptr->next;
                 ptr->next = new Node<T, K>(key, val);
                 _size++;
             };
@@ -99,6 +99,7 @@ struct Map
     void remove(T key)
     {
         Node<T, K> *ptr = this->start(key);
+        _size--;
         if (ptr->key == key)
         {
             // O(len(key)) if key is a string, else O(1).
@@ -114,13 +115,13 @@ struct Map
             {
                 if (ptr->next->next != nullptr)
                 {
-                    Node<T, K> x = ptr->next;
+                    Node<T, K> *x = ptr->next;
                     ptr->next = ptr->next->next;
-                    delete x;
+                    // delete x;
                 }
                 else
                 {
-                    delete ptr->next;
+                    // delete ptr->next;
                     ptr->next = nullptr;
                 };
             }
@@ -130,11 +131,15 @@ struct Map
     // ~O(1)
     K get(T key)
     {
+        cout << "inside get for key " << key << endl;
         Node<T, K> *ptr = this->start(key);
+        cout << "starting pointer is" << ptr << endl;
         while (ptr != nullptr)
         {
+            cout << ptr->key << endl;
             if (ptr->key == key)
             {
+                cout << "found" << endl;
                 return ptr->value;
             };
             ptr = ptr->next;
@@ -146,6 +151,7 @@ struct Map
     // ~O(1)
     bool hasKey(T key)
     {
+        cout << "has key called" << endl;
         Node<T, K> *ptr = this->start(key);
         while (ptr != nullptr)
         {
@@ -249,12 +255,19 @@ private:
     // O(len(key)) [string] | O(1) [int]
     int slot(T key)
     {
-        return hash(key) % len;
+        int s = hash(key) % len;
+        if (s < 0)
+        {
+            s += len;
+        };
+        return s;
     };
 
     // O(len(key)) [string] | O(1) [int]
     Node<T, K> *start(T key)
     {
+        cout << "the key is " << key << endl;
+        cout << "the slot is " << slot(key) << endl;
         return this->val[slot(key)]; 
     };
 };

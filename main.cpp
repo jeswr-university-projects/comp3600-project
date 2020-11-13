@@ -75,7 +75,25 @@ int main(int argc, char *argv[])
             };
         };
 
+        cout << "at line 78" << endl;
+
         Map<int, vector<int>> paths = multiStartMultiEnd<int>({1}, exits, graph);
+
+        cout << "at line 82" << endl;
+
+        cout << paths.size() << endl;
+
+        for (int p : paths.get(1))
+        {
+            cout << p << " ";
+        };
+        cout << endl;
+
+        for (int p : paths.get(1))
+        {
+            cout << graph.idToName(p) << " ";
+        };
+        cout << endl;
 
         cout << "ingesting data ..." << endl;
         if (!vm.count("escape-file")) {

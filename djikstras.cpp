@@ -306,12 +306,13 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
         endsTemp.insert(NodeAndPrev<Id>(e, -1));
     };
 
-    return x;
+    // return x;
 
     distance.add(0, endsTemp);
 
     for (int i = 0; distance.size() > 0; i++)
     {
+        cout << "i is " << i << " and the size is " << distance.size();
         if (distance.hasKey(i))
         {
             for (NodeAndPrev<Id> n : distance.get(i))
@@ -329,13 +330,15 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
                         }
                         else
                         {
+                            cout << "pre insert" << endl;
                             distance.get(i + e.weight).insert(NodeAndPrev<Id>(e.subject, n.id));
+                            cout << "post insert" << endl;
                         };
                     };
                 };
             };
+            distance.remove(i);
         };
-        distance.remove(i);
     };
 
     //     Map<Id, vector<Id>> outPaths;
