@@ -224,6 +224,11 @@ public:
         return this->matrix.getEntry(nameToId(subject), nameToId(object));
     };
 
+    int _edgeLength(int subject, int object)
+    {
+        return this->matrix.getEntry(subject, object);
+    };
+
     int nodeCount()
     {
         return matrix.size();

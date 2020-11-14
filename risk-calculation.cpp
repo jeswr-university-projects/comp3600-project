@@ -21,10 +21,10 @@ struct RoomDimensions
 
 Map<int, RoomRisk> initRisk(GraphMatrix<string> graph, Triples personTriples, Map<string, int> location)
 {
-    Map<int, vector<float>> risks;
-    risks.reserve(graph.size());
+    Map<int, vector<float>> risks(graph.nodeCount());
+    // risks.reserve(graph.size());
 
-    for (Triples t : personTriples)
+    for (Triple t : personTriples)
     {
         if (t[1] == "http://example.org/risk")
         {
@@ -45,7 +45,7 @@ Map<int, RoomRisk> initRisk(GraphMatrix<string> graph, Triples personTriples, Ma
         };
     };
 
-    Map<int, roomRisk> roomRisks;
+    Map<int, RoomRisk> roomRisks;
 
     for (Pair<int, vector<float>> risks : risks.getPairs())
     {
@@ -59,7 +59,8 @@ Map<int, RoomRisk> initRisk(GraphMatrix<string> graph, Triples personTriples, Ma
         
         roomRisks.add(risks.key, {
             no : risks.value.size(),
-            risk : total / risks.value.size()
+            risk : total / risks.value.size(),
+            from : {risks.key}
         });
     };
 };
@@ -75,7 +76,9 @@ float roomRisk(int w, int h, int no, float avg)
     return density * avg;
 };
 
-Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk> initRisks)
+// float increasedRisk
+
+Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk> initRisks, Map<int, int> nextRoom, Map<int, RoomDimensions> roomDims)
 {
     // Can start with these initialised
     int timestamp = 0;
@@ -86,8 +89,15 @@ Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk>
     Map<int, Map<int, RoomRisk>> transit;
     Map<int, float> exposureRisk;
 
-    Map<int, int> nextRoom;
+    for (int i : transit.keys())
+    {
+        exposureRisk.add(i, 0.0);
+    };
+
+    // Map<int, int> nextRoom;
     // Map<int, int> nextRoomDistance;
+
+    transit.add(0, initRisks);
 
     while (transit.size() > 0)
     {
@@ -98,10 +108,17 @@ Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk>
             for (Pair<int, RoomRisk> p : data.getPairs())
             {
                 int next = nextRoom.get(p.key);
+                RoomDimensions roomDim = roomDims.get(p.key);
+                float risk = roomRisk(roomDim.width, roomDim.length, p.value.no, p.value.risk);
 
+                // Updating the risk value
                 for (int i : p.value.from)
                 {
-                    exposureRisk.add(i, p.value.risk);
+                    float prevRisk = exposureRisk.get(i);
+                    // This works since we have designed the
+                    // hash map to ovveride existing values
+                    exposureRisk.add(i, prevRisk + (1.0 - prevRisk) * risk);
+                    // exposureRisk.add(i, p.value.risk);
                 };
 
                 // p.value.no
@@ -109,7 +126,29 @@ Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk>
 
                 if (next != -1)
                 {
-                    D
+                    int nextTime = timestamp + graph._edgeLength(p.key, next);
+                    
+                    if (!transit.hasKey(nextTime))
+                    {
+                        Map<int, RoomRisk> temp;
+                        transit.add(nextTime, temp);
+                    };
+
+                    if (!transit.get(nextTime).hasKey(next))
+                    {
+                        transit.get(nextTime).add(next, {
+                            no : 0,
+                            risk : 0.0,
+                            from : {}
+                        });
+                    };
+
+                    RoomRisk prev = transit.get(nextTime).get(next);
+
+                    transit.get(nextTime).add(next, {
+
+                    });
+                    
                 };
             };
             // data[2]

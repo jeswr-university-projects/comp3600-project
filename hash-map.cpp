@@ -205,9 +205,26 @@ struct Map
         return result;
     };
 
-    vector<Pair> getPairs()
+    vector<T> keys()
     {
-        vector<Pair> prs;
+        vector<T> result;
+        result.reserve(_size);
+
+        for (Node<T, K> *ptr : val)
+        {
+            while (ptr != nullptr)
+            {
+                result.push_back(ptr->key);
+                ptr = ptr->next;
+            };
+        };
+
+        return result;
+    };
+
+    vector<Pair<T, K>> getPairs()
+    {
+        vector<Pair<T, K>> prs;
         prs.reserve(_size);
 
         for (Node<T, K> *ptr : val)
