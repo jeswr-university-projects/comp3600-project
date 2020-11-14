@@ -17,8 +17,12 @@ using namespace std;
  * average case as ~O(1)).
  */
 
-
-
+template <typename T, typename K>
+struct Pair
+{
+    T key;
+    K value;
+};
 
 // TODO: UPDATE THE TIME COMPLEITIES TO REFLECT
 // THE ACTUAL WORST CASE TIME COMPLEXITY
@@ -145,9 +149,9 @@ struct Map
             ptr = ptr->next;
             // cout << "inside while" << endl;
         };
-        // cout << 
+        // cout <<
         cout << "erroneous key " << key << endl;
-        throw "Error: Key not found - " ;
+        throw "Error: Key not found - ";
     };
 
     // ~O(1)
@@ -187,9 +191,9 @@ struct Map
     vector<K> values()
     {
         vector<K> result;
-        result.reserve(size);
+        result.reserve(_size);
 
-        for (Node<T, K>* ptr : val)
+        for (Node<T, K> *ptr : val)
         {
             while (ptr != nullptr)
             {
@@ -198,7 +202,27 @@ struct Map
             };
         };
 
-        return result; 
+        return result;
+    };
+
+    vector<Pair> getPairs()
+    {
+        vector<Pair> prs;
+        prs.reserve(_size);
+
+        for (Node<T, K> *ptr : val)
+        {
+            while (ptr != nullptr)
+            {
+                result.push_back({
+                    key : ptr->key,
+                    value : ptr->value
+                });
+                ptr = ptr->next;
+            };
+        };
+
+        return prs;
     };
 
     // Finds the *first* key with
@@ -229,12 +253,12 @@ struct Map
     {
         for (int i = 0; i < len; i++)
         {
-            Node<T, K>* ptr = this->val[i];
+            Node<T, K> *ptr = this->val[i];
             while (ptr != nullptr)
             {
                 cout << ptr->key << " -> " << ptr->value << endl;
                 ptr = ptr->next;
-            };  
+            };
         };
     };
 
@@ -283,7 +307,7 @@ private:
     {
         // cout << "the key is " << key << endl;
         // cout << "the slot is " << slot(key) << endl;
-        return this->val[slot(key)]; 
+        return this->val[slot(key)];
     };
 };
 
@@ -294,7 +318,7 @@ struct ReverseLookupMap
     // {
 
     // };
-    
+
     void add(T key, K val)
     {
         cout << "adding edge" << endl;

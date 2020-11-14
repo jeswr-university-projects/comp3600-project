@@ -219,6 +219,11 @@ public:
         this->matrix.addEntry(s, o, weight);
     };
 
+    int edgeLength(T subject, T object)
+    {
+        return this->matrix.getEntry(nameToId(subject), nameToId(object));
+    };
+
     int nodeCount()
     {
         return matrix.size();
