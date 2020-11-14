@@ -1,7 +1,9 @@
 #include "hash-map.cpp"
 #include "graph-matrix.cpp"
 #include "rdf-types.h"
+#include <algorithm>
 #include <vector>
+#include <set>
 /**
  * Generate the covid risk for each person
  */
@@ -10,7 +12,7 @@ struct RoomRisk
 {
     int no = 0;
     float risk = 0.0;
-    set<int> from;
+    set<int> from = {};
 };
 
 struct RoomDimensions
@@ -146,9 +148,11 @@ Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk>
                     RoomRisk prev = transit.get(nextTime).get(next);
 
                     transit.get(nextTime).add(next, {
-
+                        no : prev.no + p.value.no,
+                        risk : (prev.risk * ((float(prev.no))) + p.value.risk * (float(p.value.no))) / float(prev.no + p.value.no),
+                        from : prev.from.insert(p.value.from.begin(), p.value.from.end())
                     });
-                    
+
                 };
             };
             // data[2]
