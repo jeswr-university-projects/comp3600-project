@@ -21,7 +21,7 @@ struct RoomDimensions
     int length = 0;
 };
 
-Map<int, RoomRisk> initRisk(GraphMatrix<string> graph, Triples personTriples, Map<string, int> location)
+Map<int, RoomRisk> initRisk(GraphMatrix<string> graph, Triples personTriples)
 {
     Map<int, vector<float>> risks(graph.nodeCount());
     // risks.reserve(graph.size());
@@ -32,7 +32,8 @@ Map<int, RoomRisk> initRisk(GraphMatrix<string> graph, Triples personTriples, Ma
         {
             // Get the room that the person is located
             // to start off with
-            int located = location.get(t[0]);
+            int located = graph.nameToId(t[0]);
+            
             // Converts string to float
             float risk = stof(t[2]);
 
@@ -79,8 +80,13 @@ float roomRisk(int w, int h, int no, float avg)
 };
 
 // float increasedRisk
-
-Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk> initRisks, Map<int, int> nextRoom, Map<int, RoomDimensions> roomDims)
+/**
+ * Generates the risk of covid exposure when starting in each room
+ * (note that this is a dynamic programming solution and we have)
+ * additionally reduced computation time by calculating risk increase by
+ * room rather than by individual.
+ */
+Map<int, float> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk> initRisks, Map<int, int> nextRoom, Map<int, RoomDimensions> roomDims)
 {
     // Can start with these initialised
     int timestamp = 0;
@@ -147,10 +153,12 @@ Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk>
 
                     RoomRisk prev = transit.get(nextTime).get(next);
 
+                    prev.from.insert(p.value.from.begin(), p.value.from.end());
+
                     transit.get(nextTime).add(next, {
                         no : prev.no + p.value.no,
                         risk : (prev.risk * ((float(prev.no))) + p.value.risk * (float(p.value.no))) / float(prev.no + p.value.no),
-                        from : prev.from.insert(p.value.from.begin(), p.value.from.end())
+                        from : prev.from
                     });
 
                 };
@@ -161,17 +169,25 @@ Map<string, int> generateCovidRisk(GraphMatrix<string> graph, Map<int, RoomRisk>
         };
     };
 
-    while (true)
-    {
-        Map<int, float> roomRiskTemp;
-        Map<int, int> roomCountTemp;
+    return exposureRisk;
+    // while (true)
+    // {
+    //     Map<int, float> roomRiskTemp;
+    //     Map<int, int> roomCountTemp;
 
-        for (int i = 0; i < graph.nodeCount(); i++)
-        {
-            if
-        };
-    };
+    //     for (int i = 0; i < graph.nodeCount(); i++)
+    //     {
+    //         if
+    //     };
+    // };
 
-    Map<string, int> risk;
-    for (int i = 0;)
+    // Map<string, int> risk;
+    // for (int i = 0;)
+};
+
+
+
+Map<string, float> generateIndividualrisk(GraphMatrix<string> graph, Map<int, RoomRisk> initRisks, Map<int, int> nextRoom, Map<int, RoomDimensions> roomDims)
+{
+    
 };

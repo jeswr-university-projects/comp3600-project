@@ -10,6 +10,7 @@
 #include "rdf-io/writer.cpp"
 #include "buildingTriples2graph.cpp"
 #include "djikstras.cpp"
+#include "risk-calculation.cpp"
 // #include <httplib.h>
 using namespace std;
 using namespace boost;
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
     {
         cout << desc << "\n";
         return 1;
-    }
+    };
 
     if (vm.count("calculate-paths"))
     {
@@ -72,6 +73,7 @@ int main(int argc, char *argv[])
         int skol_id = 0;
 
         Map<string, int> locations;
+        Map<string, RoomDimensions> dimensions;
         set<string> people;
         set<int> startIds;
         Triples escapeTriples;
@@ -97,6 +99,34 @@ int main(int argc, char *argv[])
             if (t[1] == "http://architecture#hasBuildingExit" && t[2] == "true")
             {
                 exits.insert(graph.nameToId(t[0]));
+            }
+            else if (t[1] == "http://architecture#width") // Could just calc area directly
+            {
+                if (dimensions.hasKey(t[0]))
+                {
+                    dimensions.add(t[0], {
+                        width : stof(t[0]),
+                        length : 0
+                    });
+                }
+                else
+                {
+                    dimensions.get(t[0]).width = stof(t[0]);
+                };
+            }
+            else if (t[1] == "http://architecture#length")
+            {
+                if (dimensions.hasKey(t[0]))
+                {
+                    dimensions.add(t[0], {
+                        width : 0,
+                        length : stof(t[0])
+                    });
+                }
+                else
+                {
+                    dimensions.get(t[0]).length = stof(t[0]);
+                };
             };
         };
 

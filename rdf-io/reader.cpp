@@ -20,12 +20,12 @@ struct TriplesAndPrefixes {
  * Time complexity is O(n)
  */
 string component(ifstream &inFile, Prefixes &prefixes) {
-    bool isURI = true; // O(1)
+    bool isURI = true;      // O(1)
     bool hasPrefix = false; // O(1)
-    char breakAt = '>'; // O(1)
-    char c; // O(1)
-    string val; // O(1)
-    inFile >> c; // O(1)
+    char breakAt = '>';     // O(1)
+    char c;                 // O(1)
+    string val;             // O(1)
+    inFile >> c;            // O(1)
 
     // Entire if statement is O(1)
     if (c == '<') {
@@ -37,7 +37,7 @@ string component(ifstream &inFile, Prefixes &prefixes) {
     } else {
         hasPrefix = true;
         breakAt = ' ';
-    }
+    };
 
     // Assume URI in this loop
     // O(n)
@@ -54,7 +54,7 @@ string component(ifstream &inFile, Prefixes &prefixes) {
 
     if (val.length() == 1 && val[0] == 'a') {
         return "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-    }
+    };
 
     if (c == ',') {
         inFile.putback(c);
@@ -67,13 +67,22 @@ string component(ifstream &inFile, Prefixes &prefixes) {
  * Takes the name of a file to be parsed and
  * returns the associated triples 
  * @param file the file name
+ * 
+ * We can argue that the complexity of this algorithm is O(n)
+ * where n is the length of the file (in characaters)
+ * This is because there are 1 to ~15 *constant* time
+ * operations between reading each character from a file.
+ * in addition, each character will be read at most 2x
+ * as a result of the push back operation. Hence we conclude that
+ * there will be between n and 300n constant time operations so the
+ * algorithm is in the O(n) complexity class.
  */
 TriplesAndPrefixes getTriples(string file) {
-    ifstream inFile(file); // O(1) ish?
-    Triples triples = {}; // O(1)
-    Prefixes prefixes = {}; // O(1)
-    char c; // O(1)
-    inFile >> c; // O(1)
+    ifstream inFile(file);   // O(1)
+    Triples triples = {};    // O(1)
+    Prefixes prefixes = {};  // O(1)
+    char c;                  // O(1)
+    inFile >> c;             // O(1)
 
     while (c == '@') {
         // Skips over the expected word 'prefix'
@@ -117,11 +126,3 @@ TriplesAndPrefixes getTriples(string file) {
         prefixes
     };
 };
-// We can argue that the complexity of this algorithm is O(n)
-// where n is the length of the file (in characaters)
-// This is because there are 1 to ~15 *constant* time
-// operations between reading each character from a file.
-// in addition, each character will be read at most 2x
-// as a result of the push back operation. Hence we conclude that
-// there will be between n and 300n constant time operations so the
-// algorithm is in the O(n) complexity class.p

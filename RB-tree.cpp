@@ -1,7 +1,10 @@
-#pragma once
+// TODO: Put this back in when it is no
+// longet the main file
+// #pragma once
 
 // #include "RB-tree.h"
-
+#include <cassert>
+#include <set>
 // // #ifndef __GUARDED_RB_TREE
 // // #define __GUARDED_RB_TREE
 
@@ -29,6 +32,12 @@
 // // };
 
 // // #endif
+
+/**
+ * The following pseudocode was used for the Left and Right rotation
+ * pseudocode - remainder was obtained from the notes
+ * https://www.andrew.cmu.edu/user/mm6/95-771/examples/RedBlackTreeProject/dist/javadoc/redblacktreeproject/RedBlackTree.html
+ */
 
 #include <vector>
 #include <limits>
@@ -62,30 +71,36 @@ template <typename Value = int>
 struct RBtree
 {
 
+    
+    vector<Value> getHighest(int i)
+    {
+        return _getHighest(i, this->root);
+    };
+    
     void insert(Value val)
     {
-        RBNode<Value> *n = new RBNode<Value>(val);
+        RBNode<Value> *z = new RBNode<Value>(val);
         RBNode<Value> *y = nullptr;
         RBNode<Value> *x = root;
 
         while (x != nullptr)
         {
             y = x;
-            x = (val < x->val) ? x->left : x->right;
+            x = (val < (x->val)) ? (x->left) : (x->right);
         };
-        n->parent = y;
+        z->parent = y;
 
         if (y == nullptr)
         {
-            root = n;
+            root = z;
         }
-        else if (val < y->val)
+        else if (val < (y->val))
         {
-            y->left = n;
+            y->left = z;
         }
         else
         {
-            y->right = n;
+            y->right = z;
         };
 
         // if (root == nullptr)
@@ -118,7 +133,7 @@ struct RBtree
         //         node->left = newNode;
         //     };
         // return;
-        postInsertRecolour(n);
+        this->postInsertRecolour(z);
 
         // if (node->val < val)
         // {
@@ -140,6 +155,36 @@ struct RBtree
         return flatten(root);
     };
 
+    void print()
+    {
+        int depth = 0;
+        vector<RBNode<Value> *> layer;
+        if (root != NULL)
+        {
+            layer.push_back(root);
+        };
+        // RBNode<Value> *n = root;
+        while (layer.size() > 0 && depth < 4)
+        {
+            depth++;
+            vector<RBNode<Value> *> layerTemp;
+            for (RBNode<Value> *v : layer)
+            {
+                cout << v->val << (v->colour == Red ? "-R" : "-B") << " ";
+                if (v->left != NULL)
+                {
+                    layerTemp.push_back(v->left);
+                };
+                if (v->right != NULL)
+                {
+                    layerTemp.push_back(v->right);
+                };
+            };
+            layer = layerTemp;
+            cout << endl;
+        };
+    };
+
     vector<Value> flatten(RBNode<Value> *n)
     {
         // RBNode<T>* n = root;
@@ -159,8 +204,6 @@ struct RBtree
             vector<Value> L = flatten(n->left);
             vector<Value> R = flatten(n->right);
             L.push_back(n->val);
-
-            
 
             vector<Value> out;
             out.insert(out.end(), L.begin(), L.end());
@@ -202,6 +245,26 @@ struct RBtree
 
 private:
     // void recolour();
+    vector<Value> _getHighest(int i, RBNode<Value> *node)
+    {
+        vector<Value> out;
+        if (node->right != nullptr)
+        {
+            out = _getHighest(i, node->right);
+        };
+        
+        if (out.size() < i)
+        {
+            out.push_back(node->val);
+        };
+
+        if (out.size() < i && node->left != nullptr)
+        {
+            vector<Value> rest = _getHighest(i - out.size(), node->left);
+            out.insert(out.end(), rest.begin(), rest.end());
+        };
+        return out;
+    };
 
     // USING NODES
     void postDeleteRecolour(RBNode<Value> *node)
@@ -275,10 +338,11 @@ private:
         }
         node->colour = Black;
     };
-
+    
+    // COLOUR OF NULL NODE IS ALWAYS BLAKC
     void postInsertRecolour(RBNode<Value> *node)
     {
-        while (node->parent != nullptr && node->parent->parent !=nullptr && node->parent->colour == Red)
+        while ((node->parent) && (node->parent->colour == Red))
         {
             if (node->parent == node->parent->parent->left)
             {
@@ -290,41 +354,43 @@ private:
                     node->parent->parent->colour = Red;
                     node = node->parent->parent;
                 }
-                else if (node == node->parent->right)
-                {
-                    node = node->parent;
-                    RotateLeft(node);
-                }
                 else
                 {
+                    if (node == node->parent->right)
+                    {
+                        node = node->parent;
+                        RotateLeft(node);
+                    }
                     node->parent->colour = Black;
                     node->parent->parent->colour = Red;
-                    RotateRight(node);
+                    RotateRight(node->parent->parent);
                 };
             }
             else
             {
                 RBNode<Value> *y = node->parent->parent->left;
-                if (y->colour = Red)
+                if ((y != nullptr) && (y->colour = Red))
                 {
                     node->parent->colour = Black;
                     y->colour = Black;
                     node->parent->parent->colour = Red;
                     node = node->parent->parent;
                 }
-                else if (node == node->parent->left)
-                {
-                    node = node->parent;
-                    RotateRight(node);
-                }
                 else
                 {
+                    if (node == node->parent->left)
+                    {
+                        node = node->parent;
+                        RotateRight(node);
+                    }
+
                     node->parent->colour = Black;
                     node->parent->parent->colour = Red;
-                    RotateLeft(node);
+                    RotateLeft(node->parent->parent);
                 };
             };
         };
+        this->root->colour = Black;
         //     if (!isLeftChild())
 
         //         if (isLeftChild(node->parent))
@@ -415,65 +481,145 @@ private:
 
     void RotateLeft(RBNode<Value> *node)
     {
-        RBNode<Value> *prevParent = Parent(node);
-        RBNode<Value> *localRoot = Parent(prevParent);
 
-        if (LChild(node) != nullptr)
+        assert (node->right != nullptr);
+        assert (root->parent == nullptr);
+        
+        // RBNode<Value> *p = Parent(node);
+        RBNode<Value> *y = node->right;
+
+        node->right = y->left;
+        if (y->left != nullptr)
         {
-            prevParent->right = LChild(node);
-            LChild(node)->parent = prevParent;
+            y->left->parent = node;
         };
+        y->parent = node->parent;
 
-        if (localRoot == nullptr)
+        if (node->parent == nullptr)
         {
-            root = node;
-            node->parent = nullptr;
-        }
-        else if (LChild(localRoot) == prevParent)
-        {
-            localRoot->left = node;
-            node->parent = localRoot;
+            this->root = y;
         }
         else
         {
-            localRoot->right = node;
-            node->parent = localRoot;
+            if (node == node->parent->left)
+            {
+                node->parent->left = y;
+            }
+            else
+            {
+                node->parent->right = y;
+            };
         };
+        y->left = node;
+        node->parent = y;
 
-        node->left = prevParent;
-        prevParent->parent = node;
+        // p->
+
+        // node->right = newRight->left;
+        // newRight->left = node;
+        // node->parent = newRight;
+
+        // if (node->right != nullptr)
+        // {
+        //     node->right->parent = node;
+        // };
+
+        // if (LChild(newLeft) == node)
+        // {
+        //     newLeft->left = newRight;
+        // };
+
+        // if (newLeft != nullptr)
+        // {
+        //     if (node == newLeft-<)
+        // };
+
+        // if (LChild(node) != nullptr)
+        // {
+        //     prevParent->right = LChild(node);
+        //     LChild(node)->parent = prevParent;
+        // };
+
+        // if (localRoot == nullptr)
+        // {
+        //     root = node;
+        //     node->parent = nullptr;
+        // }
+        // else if (LChild(localRoot) == prevParent)
+        // {
+        //     localRoot->left = node;
+        //     node->parent = localRoot;
+        // }
+        // else
+        // {
+        //     localRoot->right = node;
+        //     node->parent = localRoot;
+        // };
+
+        // node->left = prevParent;
+        // prevParent->parent = node;
     };
 
     // TODO: DOUBLE CHECK
     void RotateRight(RBNode<Value> *node)
     {
-        RBNode<Value> *prevParent = Parent(node);
-        RBNode<Value> *localRoot = Parent(prevParent);
+        assert (node->left != nullptr);
+        assert (root->parent == nullptr);
+        
+        RBNode<Value> *y = node->left;
 
-        if (RChild(node) != nullptr)
+        node->left = y->right;
+        if (y->right != nullptr)
         {
-            prevParent->left = RChild(node);
-            RChild(node)->parent = prevParent;
+            y->right->parent = node;
         };
+        y->parent = node->parent;
 
-        if (localRoot == nullptr)
+        if (node->parent == nullptr)
         {
-            root = node;
-            node->parent = nullptr;
-        }
-        else if (RChild(localRoot) == prevParent)
-        {
-            localRoot->right = node;
-            node->parent = localRoot;
+            root = y;
         }
         else
         {
-            localRoot->left = node;
-            node->parent = localRoot;
+            if (node == node->parent->left)
+            {
+                node->parent->left = y;
+            }
+            else
+            {
+                node->parent->right = y;
+            };
         };
+        y->right = node;
+        node->parent = y;
 
-        node->right = prevParent;
-        prevParent->parent = node;
+        // RBNode<Value> *prevParent = Parent(node);
+        // RBNode<Value> *localRoot = Parent(prevParent);
+
+        // if (RChild(node) != nullptr)
+        // {
+        //     prevParent->left = RChild(node);
+        //     RChild(node)->parent = prevParent;
+        // };
+
+        // if (localRoot == nullptr)
+        // {
+        //     root = node;
+        //     node->parent = nullptr;
+        // }
+        // else if (RChild(localRoot) == prevParent)
+        // {
+        //     localRoot->right = node;
+        //     node->parent = localRoot;
+        // }
+        // else
+        // {
+        //     localRoot->left = node;
+        //     node->parent = localRoot;
+        // };
+
+        // node->right = prevParent;
+        // prevParent->parent = node;
     };
 
     void LRRotate(RBNode<Value> *node)
@@ -543,15 +689,25 @@ int main()
     t.insert(7);
     t.insert(3);
     t.insert(10);
-    // cout << "after second insert" << endl;
-    // t.insert(4);
-    vector<int> g = t.flat();
-    // int s = g[0];
-    // cout << s << endl;
-    cout << g.size() << endl;
-    for (int e : g)
+    t.print();
+    for (int i : t.flat())
     {
-        cout << e << " ";
+        cout << i << " ";
     };
     cout << endl;
+    for (int i : t.getHighest(3))
+    {
+        cout << i << " ";
+    };
+    // cout << "after second insert" << endl;
+    // t.insert(4);
+    // vector<int> g = t.flat();
+    // // int s = g[0];
+    // // cout << s << endl;
+    // cout << g.size() << endl;
+    // for (int e : g)
+    // {
+    //     cout << e << " ";
+    // };
+    // cout << endl;
 };
