@@ -68,8 +68,8 @@ SubjectsData triplesToSubjectData(Triples &triples)
             else
             {
                 data[a].predicates[b].objects.push_back(o);
-            }
-        }
+            };
+        };
         a = -1;
         b = -1;
     };
@@ -97,19 +97,18 @@ string valueToString(string value, Prefixes &prefixes)
     };
 
     // Next we see if we can apply a prefix
-    for (Prefixes::iterator i = prefixes.begin(); i != prefixes.end(); ++i)
+    for (pair<string, string> p : prefixes)
     {
         // This is when the namespace matches
-        if ((value.size() >= (i->second).size()) && (value.substr(0, (i->second).length()) == (i->second)))
+        if ((value.size() >= p.second.size()) && (value.substr(p.second.length()) == p.second))
         {
-            return (i->first) + ":" + value.substr((i->second).length());
+            return p.first + ":" + value.substr(p.second.length());
         };
     };
 
-    
-
     // Otherwise we must have a URI with no prefix
-    return (value.size() > 6 && value.substr(7) == "http://") ? "<" + value + ">" : value;
+    // TODO: FIX THIS IN OTHER FILE
+    return "<" + value + ">";
 };
 
 /**
@@ -122,37 +121,17 @@ void outputSubjectData(SubjectsData data, Prefixes prefixes, string file)
 {
     ofstream outFile(file);
 
-    cout << "subjects data" << endl;
-    for (SubjectData s : data)
+    for (pair<string, string> p : prefixes)
     {
-        cout << s.subject << endl;
-        for (PredicateData p : s.predicates)
-        {
-            cout << "    " << p.predicate << endl;
-            for (string o : p.objects)
-            {
-                cout << "            " << o << endl;
-            };
-        };
-        cout << endl;
+        outFile << "@prefix " << p.first << ": <" << p.second << "> ." << endl;
     };
-
-    // First the prefixes
-    for (Prefixes::iterator i = prefixes.begin(); i != prefixes.end(); ++i)
-    {
-        outFile << "@prefix " << i->first << ": <" << i->second << "> ." << endl;
-    };
-
-    // if (prefixes.size() > 0)
-    // {
-    //     outFile << endl;
-    // }
 
     // Now we output the actual data
     for (SubjectData subj : data)
     {
-        outFile << endl;
-        outFile << valueToString(subj.subject, prefixes) << " ";
+        // outFile << endl;
+        outFile << endl
+                << valueToString(subj.subject, prefixes) << " ";
         bool firstPred = true;
         for (PredicateData pred : subj.predicates)
         {
@@ -176,48 +155,6 @@ void outputSubjectData(SubjectsData data, Prefixes prefixes, string file)
         outFile << " .\n";
     };
 
-
-    // for (int i = 0; i < data.size(); i++)
-    // {
-    //     SubjectData subj = data[i];
-    //     outFile << valueToString(subj.subject, prefixes) << ' ';
-
-    //     for (int j = 0; j < subj.predicates.size(); j++)
-    //     {
-    //         PredicateData pred = subj.predicates[j];
-    //         if (j > 0)
-    //         {
-    //             outFile << "\t";
-    //         }
-    //         outFile << valueToString(pred.predicate, prefixes) << ' ';
-
-    //         for (int k = 0; k < pred.objects.size(); k++)
-    //         {
-    //             string obj = pred.objects[k];
-    //             outFile << valueToString(obj, prefixes);
-
-    //             if (k + 1 < pred.objects.size())
-    //             {
-    //                 outFile << ", ";
-    //             };
-    //         };
-
-    //         if (j + 1 < pred.objects.size())
-    //         {
-    //             outFile << "; " << endl;
-    //         };
-    //     };
-
-    //     outFile << " ." << endl;
-
-    //     // Can be improved by putting endl at start of loop as this
-    //     // also handles the spacing from prefixes
-    //     if (subj.predicates.size() > 1 && i + 1 < data.size())
-    //     {
-    //         outFile << endl;
-    //     };
-    // };
-
     outFile.close();
 };
 
@@ -229,10 +166,5 @@ void outputSubjectData(SubjectsData data, Prefixes prefixes, string file)
  */
 void writeTriples(Triples triples, Prefixes prefixes, string file)
 {
-    cout << "writing triples:" << endl;
-    for (Triple triple : triples)
-    {
-        cout << triple[0] << " " << triple[1] << " " << triple[2] << endl;
-    };
     outputSubjectData(triplesToSubjectData(triples), prefixes, file);
 };
