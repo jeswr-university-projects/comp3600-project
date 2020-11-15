@@ -4,41 +4,78 @@
 @prefix rdfs: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix room: <http://architecture#room_> .
 
-ex:Alice ex:canEscape false .
+<http://example.org/Alice> <http://example.org/canEscape> "false" .
 
-ex:Bob ex:canEscape true;
-	ex:escapeRoute ex:1 .
+<http://example.org/Bob> <http://example.org/canEscape> "true";
+	<http://example.org/escapeRoute> <http://example.org/1> .
 
-ex:1 ex:path ach:room_BobOffice;
-	rdfs:rest ex:2 .
+<http://example.org/1> <http://example.org/path> <http://architecture#room_BobOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/2> .
 
-ex:2 ex:path ach:room_CharlesOffice;
-	rdfs:rest ex:3 .
+<http://example.org/2> <http://example.org/path> <http://architecture#room_CharlesOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/3> .
 
-ex:3 ex:path ach:room_ConferenceRoom1;
-	rdfs:rest ex:4 .
+<http://example.org/3> <http://example.org/path> <http://architecture#room_ConferenceRoom1>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/4> .
 
-ex:4 ex:path ach:room_ConferenceRoom2;
-	rdfs:rest ex:5 .
+<http://example.org/4> <http://example.org/path> <http://architecture#room_ConferenceRoom2>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/5> .
 
-ex:5 ex:path ach:room_AliceOffice;
-	rdfs:rest ex:6 .
+<http://example.org/5> <http://example.org/path> <http://architecture#room_AliceOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/6> .
 
-ex:6 rdfs:rest rdfs:nil .
+<http://example.org/6> <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
 
-ex:Charles ex:canEscape true;
-	ex:escapeRoute ex:7 .
+<http://example.org/Bob2> <http://example.org/canEscape> "true";
+	<http://example.org/escapeRoute> <http://example.org/7> .
 
-ex:7 ex:path ach:room_CharlesOffice;
-	rdfs:rest ex:8 .
+<http://example.org/7> <http://example.org/path> <http://architecture#room_BobOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/8> .
 
-ex:8 ex:path ach:room_ConferenceRoom1;
-	rdfs:rest ex:9 .
+<http://example.org/8> <http://example.org/path> <http://architecture#room_CharlesOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/9> .
 
-ex:9 ex:path ach:room_ConferenceRoom2;
-	rdfs:rest ex:10 .
+<http://example.org/9> <http://example.org/path> <http://architecture#room_ConferenceRoom1>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/10> .
 
-ex:10 ex:path ach:room_AliceOffice;
-	rdfs:rest ex:11 .
+<http://example.org/10> <http://example.org/path> <http://architecture#room_ConferenceRoom2>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/11> .
 
-ex:11 rdfs:rest rdfs:nil .
+<http://example.org/11> <http://example.org/path> <http://architecture#room_AliceOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/12> .
+
+<http://example.org/12> <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+
+<http://example.org/Charles> <http://example.org/canEscape> "true";
+	<http://example.org/escapeRoute> <http://example.org/13> .
+
+<http://example.org/13> <http://example.org/path> <http://architecture#room_CharlesOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/14> .
+
+<http://example.org/14> <http://example.org/path> <http://architecture#room_ConferenceRoom1>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/15> .
+
+<http://example.org/15> <http://example.org/path> <http://architecture#room_ConferenceRoom2>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/16> .
+
+<http://example.org/16> <http://example.org/path> <http://architecture#room_AliceOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/17> .
+
+<http://example.org/17> <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+
+<http://example.org/Charles2> <http://example.org/canEscape> "true";
+	<http://example.org/escapeRoute> <http://example.org/18> .
+
+<http://example.org/18> <http://example.org/path> <http://architecture#room_CharlesOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/19> .
+
+<http://example.org/19> <http://example.org/path> <http://architecture#room_ConferenceRoom1>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/20> .
+
+<http://example.org/20> <http://example.org/path> <http://architecture#room_ConferenceRoom2>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/21> .
+
+<http://example.org/21> <http://example.org/path> <http://architecture#room_AliceOffice>;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://example.org/22> .
+
+<http://example.org/22> <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .

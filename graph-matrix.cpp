@@ -329,10 +329,10 @@ public:
     {
         int id;
 
-        cout << "name to id called " << names.hasKey(key) << endl;
-        cout << "------------------------------------------------" << endl;
-        print();
-        cout << "------------------------------------------------" << endl;
+        // cout << "name to id called " << names.hasKey(key) << endl;
+        // cout << "------------------------------------------------" << endl;
+        // print();
+        // cout << "------------------------------------------------" << endl;
 
         if (!names.hasKey(key))
         {

@@ -4,14 +4,21 @@
 @prefix room: <http://architecture#room_> .
 
 ex:Alice a foaf:Person ;
-    ex:risk 0.001 ;
+    ex:risk "0.01" ;
     ach:located room:Library .
 
 ex:Bob a foaf:Person ;
-    ex:risk 0.05 ;
+    ex:risk "0.01" ;
+    ach:located room:BobOffice .
+
+ex:Bob2 a foaf:Person ;
+    ex:risk "0.05" ;
     ach:located room:BobOffice .
 
 ex:Charles a foaf:Person ;
-    ex:risk 0.003 ;
+    ex:risk "0.01" ;
     ach:located room:CharlesOffice .
-    
+
+ex:Charles2 a foaf:Person ;
+    ex:risk "0.5" ;
+    ach:located room:CharlesOffice .

@@ -283,22 +283,12 @@ struct NodeAndPrev
     Id prev;
     Id id;
 };
-
-// template <typename Id = int>
-// bool NodeAndPrev operator<(NodeAndPrev<Id> x, NodeAndPrev<Id> y)
-// {
-//     x.id < y.id;
-// };
-
+// TODO: Version with things other way around
 template <typename Id = int, typename Node = string>
-Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix<Node> graph)
+Map<Id, Id> shortestNeightbour(set<Id> ends, GraphMatrix<Node> graph)
 {
-    Map<Id, vector<Id>> x;
-    // return x;
-
     Map<Id, Id> paths(graph.nodeCount());
-    // Map<Id, int> weights(graph.nodeCount());
-    Map<int, set<NodeAndPrev<Id>>> distance;
+    Map<int, set<NodeAndPrev<Id>>> distance(graph.nodeCount());
 
     set<NodeAndPrev<Id>> endsTemp;
     for (Id e : ends)
@@ -306,22 +296,16 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
         endsTemp.insert(NodeAndPrev<Id>(e, -1));
     };
 
-    // return x;
-
     distance.add(0, endsTemp);
-
     for (int i = 0; distance.size() > 0; i++)
     {
-        cout << "i is " << i << " and the size is " << distance.size();
         if (distance.hasKey(i))
         {
             for (NodeAndPrev<Id> n : distance.get(i))
             {
                 if (!paths.hasKey(n.id))
                 {
-                    // weights.add(n.id, i);
                     paths.add(n.id, n.prev);
-
                     for (_weightedEdge<Id> e : graph._weightedEdgesInto(n.id))
                     {
                         if (!distance.hasKey(i + e.weight))
@@ -330,9 +314,7 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
                         }
                         else
                         {
-                            cout << "pre insert" << endl;
                             distance.get(i + e.weight).insert(NodeAndPrev<Id>(e.subject, n.id));
-                            cout << "post insert" << endl;
                         };
                     };
                 };
@@ -340,97 +322,26 @@ Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix
             distance.remove(i);
         };
     };
+    return paths;
+};
 
-    //     Map<Id, vector<Id>> outPaths;
-    // for (Id s : starts)
-    // {
-    //     vector<Id> outPath;
-    //     Id p = s;
 
-    //     while (paths.hasKey(p))
-    //     {
-    //         outPath.push_back(p);
-    //         p = paths.get(p);
-    //     };
-    //     outPath.push_back(p);
 
-    //     outPaths.add(s, outPath);
-    // };
-
-    // return outPaths;
-
-    // // // set<Id> updatable = ends;
-
-    // // // int i = 0;
-
-    // // while (updatable.size() > 0)
-    // // {
-
-    // // };
-
-    // set<Id> x = distance.get(1);
-    // x.insert()
-
-    // int w = 0;
-
-    // ends
-
-    // for (Id e : ends)
-    // {
-    //     weights.add(e, 0);
-    // };
-
-    // vector<Id> updated = ends;
-
-    // // Dynamic programming solution to determine optimal
-    // // path for *all* nodes in the graph
-    // while (updated.size() > 0)
-    // {
-    //     for (Id node : updated)
-    //     {
-    //         int weight = weights.get(node);
-    //         for (_weightedEdge<Id> w : graph._weightedEdgesInto(node))
-    //         {
-    //             if (!weights.hasKey(w.subject) || (weights.get(node) + weight < weights.get(w.subject)))
-    //             {
-    //                 paths.add(w.subject, node);
-    //                 weights.add(w.subject, weights.get(node) + weight)
-    //             };
-    //         };
-    //     };
-    // };
-    // cout << endl;
-    // cout << "--------------------- getting id ------------------" << endl;
-    // cout << graph.nodeCount() << endl;
-    // cout << graph.nameToId("http://architecture#roomCharlesOffice") << endl;
-
-    // cout << " ------------ analysing mappings --------------- " << endl;
-    // for (int i = 0; i < 4; i++)
-    // {
-    //     cout << graph.idToName(i) << " ("  << i << ") -> " << graph.idToName(paths.get(i)) << " (" << paths.get(i) << ")" << endl;
-    // };
-
-    graph.print();
-
+template <typename Id = int, typename Node = string>
+Map<Id, vector<Id>> multiStartMultiEnd(set<Id> starts, set<Id> ends, GraphMatrix<Node> graph, Map<Id, Id> paths)
+{
     Map<Id, vector<Id>> outPaths;
-    cout << "--------------------------------generating escape triples---------------------------" << endl;
     for (Id s : starts)
     {
         vector<Id> outPath;
         Id p = s;
-
-
-        cout << p << paths.hasKey(p) << endl;
         while (paths.hasKey(p))
         {
             outPath.push_back(p);
             p = paths.get(p);
         };
-        // outPath.push_back(p);
-
         outPaths.add(s, outPath);
     };
-
     return outPaths;
 };
 

@@ -20,6 +20,12 @@ using namespace std;
 template <typename T, typename K>
 struct Pair
 {
+    Pair(T k, K v)
+    {
+        key = k;
+        value = v;
+    };
+ 
     T key;
     K value;
 };
@@ -59,6 +65,9 @@ struct Map
 
     void add(T key, K val)
     {
+        cout << "inserting " << key << endl;
+        cout << "slot " << this->slot(key) << endl;
+        print();
         // Node<T, K> *ptr = this->start(key);
         // while (ptr != nullptr)
         // {
@@ -77,7 +86,8 @@ struct Map
         if (this->start(key) == nullptr)
         {
             // delete this->val[slot(key)];
-            this->val[slot(key)] = new Node<T, K>(key, val);
+            cout << "inserting in " << slot(key) << endl;
+            this->val[this->slot(key)] = new Node<T, K>(key, val);
             _size++;
         }
         else
@@ -140,16 +150,12 @@ struct Map
         // cout << "starting pointer is" << ptr << endl;
         while (ptr != nullptr)
         {
-            // cout << ptr->key << endl;
             if (ptr->key == key)
             {
-                // cout << "found" << endl;
                 return ptr->value;
             };
             ptr = ptr->next;
-            // cout << "inside while" << endl;
         };
-        // cout <<
         cout << "erroneous key " << key << endl;
         throw "Error: Key not found - ";
     };
@@ -193,7 +199,7 @@ struct Map
         vector<K> result;
         result.reserve(_size);
 
-        for (Node<T, K> *ptr : val)
+        for (Node<T, K> *ptr : this->val)
         {
             while (ptr != nullptr)
             {
@@ -227,14 +233,17 @@ struct Map
         vector<Pair<T, K>> prs;
         prs.reserve(_size);
 
-        for (Node<T, K> *ptr : val)
+        cout << "len is " << len << endl;
+
+        
+        for (int i = 0; i < this->len; i++)
         {
+            Node<T, K> *ptr = this->val[i];
+            cout << "inside for of getPairs" << endl;
             while (ptr != nullptr)
             {
-                result.push_back({
-                    key : ptr->key,
-                    value : ptr->value
-                });
+                cout << "pushing back " << ptr->key << endl;
+                prs.push_back(Pair<T, K>(ptr->key, ptr->value));
                 ptr = ptr->next;
             };
         };
@@ -268,15 +277,17 @@ struct Map
 
     void print()
     {
-        for (int i = 0; i < len; i++)
-        {
-            Node<T, K> *ptr = this->val[i];
-            while (ptr != nullptr)
-            {
-                cout << ptr->key << " -> " << ptr->value << endl;
-                ptr = ptr->next;
-            };
-        };
+        // cout << "Len " << this->len << " " << this->val.size() << endl;
+        // for (int i = 0; i < len; i++)
+        // {
+        //     Node<T, K> *ptr = this->val[i];
+        //     while (ptr != nullptr)
+        //     {
+        //         cout << ptr->key << " -> " << endl;// << ptr->value << endl;
+        //         ptr = ptr->next;
+        //     };
+        // };
+        // cout << "Len " << this->len << this->val.size() << endl;
     };
 
 private:
@@ -331,15 +342,9 @@ private:
 template <typename T, typename K>
 struct ReverseLookupMap
 {
-    // ReverseLookupMap<T, K>()
-    // {
-
-    // };
 
     void add(T key, K val)
     {
-        cout << "adding edge" << endl;
-        cout << key << endl;
         forward.add(key, val);
         backward.add(val, key);
     };
@@ -358,7 +363,6 @@ struct ReverseLookupMap
     // ~O(1)
     bool hasKey(T key)
     {
-        cout << "checking if key " << key << " exists" << endl;
         return forward.hasKey(key);
     };
 

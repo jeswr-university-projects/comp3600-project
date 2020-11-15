@@ -347,7 +347,7 @@ private:
             if (node->parent == node->parent->parent->left)
             {
                 RBNode<Value> *y = node->parent->parent->right;
-                if (y->colour = Red)
+                if (y != nullptr && y->colour == Red)
                 {
                     node->parent->colour = Black;
                     y->colour = Black;
@@ -681,33 +681,33 @@ private:
     };
 };
 
-int main()
-{
-    RBtree<int> t;
-    t.insert(5);
-    t.insert(1);
-    t.insert(7);
-    t.insert(3);
-    t.insert(10);
-    t.print();
-    for (int i : t.flat())
-    {
-        cout << i << " ";
-    };
-    cout << endl;
-    for (int i : t.getHighest(3))
-    {
-        cout << i << " ";
-    };
-    // cout << "after second insert" << endl;
-    // t.insert(4);
-    // vector<int> g = t.flat();
-    // // int s = g[0];
-    // // cout << s << endl;
-    // cout << g.size() << endl;
-    // for (int e : g)
-    // {
-    //     cout << e << " ";
-    // };
-    // cout << endl;
-};
+// int main()
+// {
+//     RBtree<int> t;
+//     t.insert(5);
+//     t.insert(1);
+//     t.insert(7);
+//     t.insert(3);
+//     t.insert(10);
+//     t.print();
+//     for (int i : t.flat())
+//     {
+//         cout << i << " ";
+//     };
+//     cout << endl;
+//     for (int i : t.getHighest(3))
+//     {
+//         cout << i << " ";
+//     };
+//     // cout << "after second insert" << endl;
+//     // t.insert(4);
+//     // vector<int> g = t.flat();
+//     // // int s = g[0];
+//     // // cout << s << endl;
+//     // cout << g.size() << endl;
+//     // for (int e : g)
+//     // {
+//     //     cout << e << " ";
+//     // };
+//     // cout << endl;
+// };
